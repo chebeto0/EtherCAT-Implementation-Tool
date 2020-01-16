@@ -1,0 +1,931 @@
+﻿<Controls:MetroWindow x:Class="EtherCAT_Master.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EtherCAT_Master"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:nscontrols="clr-namespace:EtherCAT_Master.Core.Controls"              
+        mc:Ignorable="d"
+        Closing="Window_Closing"
+        ContentRendered="Window_ContentRendered"
+        Loaded="Window_Loaded"
+        Name ="MWindow" Title="INTEC EtherView 0.2" Height="900" Width="1600" Background="White">
+
+    <Window.Resources>
+        <ResourceDictionary>
+
+            <local:GroupItemStyleSelector x:Key="groupItemStyleSelector"/>
+            <nscontrols:DictionaryReadOnlyConverter x:Key="dictionaryReadOnlyConverter"/>
+            <nscontrols:NumericTypeConverter x:Key="numericTypeConverter"/>
+            <nscontrols:DictionaryReadOnlyBackgroundConverter x:Key="dictionaryReadOnlyBackgroundConverter"/>
+            <nscontrols:HaltBitPvmConverter x:Key="haltBitPvmConverter"/>
+            <nscontrols:EcStateToStringConverter x:Key="ecStateToStringConverter"/>
+            <nscontrols:BoolInvertConverter x:Key="boolInvertConverter"/>
+            <!-- Style for the first level GroupItem -->
+            <Style x:Key="FirstLevel" TargetType="{x:Type GroupItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                            <Expander IsExpanded="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.ExpandedFirstLevel, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
+                                <Expander.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Margin="0,0" Text="{Binding Name}" Foreground="White" TextBlock.FontWeight="Bold"/>
+                                    </Grid>
+                                </Expander.Header>
+                                <ItemsPresenter />
+                            </Expander>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <ControlTemplate TargetType="{x:Type GroupItem}" x:Key="withExpander">
+                <Expander IsExpanded="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.ExpandedSecondLevel, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Margin="0,0,0,0" Background="LightGray" Expanded="Expander_Expanded" >
+                    <Expander.Header>
+                        <!--<StackPanel Orientation="Horizontal">-->
+                        <TextBlock Text="{Binding Name, StringFormat={}{0:X4}}" Foreground="Black" FontWeight="Bold" Padding="3"/>
+                        <!--<TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=Name}" Foreground="Black" FontWeight="Bold" Padding="3"/>-->
+                        <!--<TextBlock Text="{Binding Name, StringFormat={}{0:X4}}" Foreground="Black" FontWeight="Bold" Padding="3"/>-->
+                        <!--</StackPanel>-->
+                    </Expander.Header>
+                    <ItemsPresenter />
+                </Expander>
+            </ControlTemplate>
+
+            <ControlTemplate TargetType="{x:Type GroupItem}" x:Key="withExpanderExpaded">
+                <Expander IsEnabled="True" Margin="0,0,0,0" Background="LightGray" >
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name, StringFormat={}{0:X4}}" Foreground="Black" FontWeight="Bold" Padding="3"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <ItemsPresenter />
+                </Expander>
+            </ControlTemplate>
+
+
+            <ControlTemplate TargetType="{x:Type GroupItem}" x:Key="withOutExpander">
+                <ItemsPresenter />
+            </ControlTemplate>
+
+            <nscontrols:GroupSizeToExpanderConverter x:Key="groupSizeToExpanderConverter"/>
+            <!-- Style for the second level GroupItem -->
+            <Style x:Key="SecondLevel" TargetType="{x:Type GroupItem}">
+                <Setter Property="Template" Value="{StaticResource withExpander}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Converter={StaticResource groupSizeToExpanderConverter}}" Value="False">
+                        <Setter Property="Template" Value="{StaticResource withOutExpander}"/>
+                    </DataTrigger>
+                    <!--<DataTrigger Binding="{Binding Expanded}" Value="False">
+                        <Setter Property="Template" Value="{StaticResource withExpander}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Expanded}" Value="True">
+                        <Setter Property="Template" Value="{StaticResource withExpanderExpanded}"/>
+                    </DataTrigger>-->
+                </Style.Triggers>
+            </Style>
+
+
+
+            <DataTemplate x:Key="MenuItemTemplateScope" DataType="{x:Type Controls:HamburgerMenuIconItem}">
+                <Grid Height="48">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                    <ContentControl Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{Binding IconColor}"
+                                    Focusable="False"
+                                    Content="{Binding Icon}" />
+                    <TextBlock Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Foreground="White"
+                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                    <ContentControl Grid.Column="1" Content="{Binding ChckBx}"/>
+                    <ContentControl Grid.Column="2" Content="{Binding Bttn}"/>
+                    <ContentControl Grid.Column="3" Content="{Binding Combo}"/>
+                    <!--<ComboBox   Grid.Column="1" Visibility="{Binding Vis}"  ItemsSource="{Binding Dict}" SelectedIndex="1" DisplayMemberPath="Value" SelectedValuePath="Key" SelectionChanged="HambMenuCombo_SelectionChanged" FontFamily="Courier New"></ComboBox>-->
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="MenuItemTemplateDict" DataType="{x:Type Controls:HamburgerMenuIconItem}">
+                <Grid Height="48">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ContentControl Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{Binding Color}"
+                                    Focusable="False"
+                                    Content="{Binding Icon}" />
+                    <TextBlock Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Foreground="White"
+                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                    <ContentControl Grid.Column="1" Content="{Binding TxtBox}" Foreground="{Binding Color}" Visibility="{Binding Vis}"></ContentControl>
+                </Grid>
+            </DataTemplate>
+
+            <HierarchicalDataTemplate 
+        x:Key="CheckBoxItemTemplate"
+        ItemsSource="{Binding Children, Mode=OneTime}"
+        >
+                <StackPanel Orientation="Horizontal">
+                    <!-- These elements are bound to a DictViewModel object. -->
+                    <CheckBox
+            Focusable="False" 
+            IsChecked="{Binding IsChecked}" 
+            VerticalAlignment="Center"
+            />
+                    <ContentPresenter 
+            Content="{Binding Name, Mode=OneTime}" 
+            Margin="2,0"
+            />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Name="Grid1">
+
+        <Grid.Resources>
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="175" />
+            <!--<RowDefinition Height="45" />-->
+            <RowDefinition  Height="6*"/>
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition  Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="175"/>
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+
+            <ContentControl  Name="ContentSwitchDS" Grid.Column="2" Content="{Binding}"/>
+
+            <GroupBox  Header="Comm" Grid.Column="0" Margin="5" >
+                <StackPanel x:Name="ChooseComm" IsEnabled="{Binding Connected, Converter={StaticResource boolInvertConverter}}">
+                    <RadioButton Name="RadButEcat" Content="EtherCAT" Checked="RadButEcat_Checked"/>
+                    <RadioButton Name="RadButUdp" Content="UDP/IP" Checked="RadButUdp_Checked"/>
+
+                </StackPanel>
+            </GroupBox>
+
+            <ContentControl Name="CommContentControl" Grid.Column="1" Content="{Binding}" />
+
+            
+        </Grid>
+
+        <Grid Name="GridX" Grid.Row="1" Grid.RowSpan="1" Grid.Column="0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <GridSplitter HorizontalAlignment="Right" 
+                  VerticalAlignment="Stretch" 
+                  Grid.Column="1" ResizeBehavior="PreviousAndNext"
+                  Width="5" Background="#FF8F9EA5"/>
+
+            <ContentControl Grid.Column="2" Name="ContentScope_Second" Content="{Binding}"/>
+
+            <Button x:Name="buttonSplitScope" Margin="5" Grid.Column="0" Height="35" Width="45" VerticalAlignment="Top" HorizontalAlignment="Right" Click="buttonSplitScope_Click"/>
+
+            <TabControl Name="Tabs" Grid.Column="0" HorizontalAlignment="Stretch" Background="#FFFFFFFF" VerticalAlignment="Stretch"  SelectionChanged="Tabs_SelectionChanged">
+
+                <TabItem Name="TabPPM" Header="Profile Position Mode" BorderThickness="0.5">
+                    <Grid x:Name="ppmGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <!--<ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>-->
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <GroupBox x:Name="ppmGroupBox" Header="Drive Sequence" Grid.Row="1" Grid.Column="0" Height="Auto" VerticalAlignment="Stretch"  HorizontalAlignment="Stretch">
+                            <Grid Background="White"  IsEnabled="{Binding EnableIfNoFault}" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="1*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <DataGrid Name="driveSequence" InputScope="Number" SelectionMode="Single" Grid.ColumnSpan="2" Grid.Row="2" ColumnHeaderHeight="50" BorderThickness="1"  CanUserAddRows="False" CanUserSortColumns="False" CanUserResizeColumns="True" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" AutoGenerateColumns="False" Width="Auto" Background="White">
+                                    <DataGrid.Columns>
+                                        <!--<DataGridTextColumn Width="Auto" Header="Target&#x0a;Position"  Binding="{Binding TargetPosition}" />-->
+                                        <!--<DataGridTextColumn Header="Current&#x0a;Position" IsReadOnly="True" Width="Auto" Binding="{Binding CurrentPosition}" />-->
+                                        <DataGridTemplateColumn  Header="Target&#x0a;Position" Width="2*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid Visibility="{Binding Vis}" Margin="2,3">
+                                                        <nscontrols:TwoWaySlider x:Name="SliderTest" VerticalAlignment="Center" Value="{Binding TargetPosition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick ="DS_DoubleClick_TargetPosition"  Maximum="{Binding MaxPosSlide}" Minimum="{Binding MinPosSlide}" TickFrequency="{Binding TickPos}" LargeChange="{Binding TickPos}" Grid.ColumnSpan="3" Visibility="{Binding Vis}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn  Header="Velocity&#x0a;[1/min]" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="2,3">
+                                                        <Slider VerticalAlignment="Center" Height ="35" MouseDoubleClick = "DS_DoubleClick_TargetVelocity" AutoToolTipPlacement="TopLeft" TickFrequency="{Binding TickVel}" Controls:SliderHelper.EnableMouseWheel="MouseHover" Controls:SliderHelper.ChangeValueBy="LargeChange" LargeChange="{Binding TickVel}" Style="{DynamicResource FlatSlider}" Visibility="{Binding Vis}" Maximum="{Binding MaxVelSlide}" Minimum="1" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Value="{Binding Velocity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            <Slider.LayoutTransform>
+                                                                <ScaleTransform ScaleY="1.2" ScaleX="1.5"/>
+                                                            </Slider.LayoutTransform>
+                                                        </Slider>
+                                                        <!--<Grid Visibility="{Binding Vis}" Margin="2,3">
+                                                        <local:TwoWaySlider x:Name="SliderTest" VerticalAlignment="Center" Value="{Binding Velocity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick ="DS_DoubleClick_TargetVelocity"  Maximum="{Binding MaxVelSlide}" Minimum="{Binding MinVelSlide}" TickFrequency="{Binding TickVel}" LargeChange="{Binding TickVel}" Grid.ColumnSpan="3" Visibility="{Binding Vis}"/>
+                                                    </Grid>-->
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn  Header="Acceleration&#x0a;[1/s^2]" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="2,3">
+                                                        <Slider VerticalAlignment="Center" Height="35" MouseDoubleClick="DS_DoubleClick_TargetAcceleration" AutoToolTipPlacement="TopLeft" TickFrequency="{Binding TickAcc}" Controls:SliderHelper.EnableMouseWheel="MouseHover" Controls:SliderHelper.ChangeValueBy="LargeChange" LargeChange="{Binding TickAcc}" Style="{DynamicResource FlatSlider}" Visibility="{Binding Vis}" Maximum="{Binding MaxAccSlide}" Minimum="1" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Value="{Binding Acceleration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            <Slider.LayoutTransform>
+                                                                <ScaleTransform ScaleY="1.2" ScaleX="1.5"/>
+                                                            </Slider.LayoutTransform>
+                                                        </Slider>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn  Header="Deceleration&#x0a;[1/s^2]" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="2,3">
+                                                        <Slider VerticalAlignment="Center" Height="35" AutoToolTipPlacement="TopLeft" MouseDoubleClick ="DS_DoubleClick_TargetDeceleration" Controls:SliderHelper.EnableMouseWheel="MouseHover" LargeChange="{Binding TickDec}" TickFrequency="{Binding TickDec}" Controls:SliderHelper.ChangeValueBy="LargeChange" Style="{DynamicResource FlatSlider}" Minimum="1" Visibility="{Binding Vis}" Maximum="{Binding MaxDecSlide}" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Value="{Binding Deceleration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            <Slider.LayoutTransform>
+                                                                <ScaleTransform ScaleY="1.2" ScaleX="1.5"/>
+                                                            </Slider.LayoutTransform>
+                                                        </Slider>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Ramp" Width="Auto">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Click="Button_ChangeRampPPM" Visibility="{Binding Vis}" Content="{Binding RampTypeText}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <!--<DataGridTextColumn Header="Time&#x0a;[ms]" Width="Auto"  Binding="{Binding TimeWait}" />-->
+                                        <DataGridTemplateColumn Header="Time&#x0a;[ms]" Width="Auto">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Controls:NumericUpDown InterceptArrowKeys="True" InterceptMouseWheel="True" InputScope="Number" Focusable="True" InterceptManualEnter="True" FontSize="14" Visibility="{Binding Vis}"  Minimum = "{Binding TimeMinimum}" Grid.Column="3" Maximum = "100000" Interval = "{Binding TimeInterval}" Value="{Binding TimeWait, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header=" " Width="40">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Click="Button_AddRemoveDS" FontWeight="Bold" Background="{Binding ButtonColor}" Content="{Binding AddRemoveText}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <Grid Grid.Row="0" Grid.ColumnSpan="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto" MinWidth="75"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Name="StartDS" FontSize="14" Content="Start" Grid.Row="0" Click="Button_StartDriveSequence" Height="50" VerticalAlignment="Top"/>
+                                    <Button FontSize="14" Name="HaltContinueDS" Content="Halt" Grid.Column="1" Grid.Row="0" Click="Button_HaltDriveSequence" Height="50" VerticalAlignment="Top"/>
+                                    <Label FontSize="14" Grid.Column="2" Content="Repeat:" VerticalContentAlignment="Center" Width="Auto" />
+                                    <Label Name ="CountDS" FontSize="14" Grid.Column="3" Content="0" VerticalContentAlignment="Center" Width="Auto" />
+                                    <Label FontSize="14" Grid.Column="4" Content="/" VerticalContentAlignment="Center" Width="Auto" />
+                                    <!--<TextBox Name="repeat" Height="25" Text="0" Grid.Column="3" InputScope="Number"/>-->
+                                    <Controls:NumericUpDown x:Name="repeat" InterceptArrowKeys="True" InterceptMouseWheel="True" InputScope="Number" FontSize="14" Minimum = "0" Grid.Column="5" Maximum = "1000000000" Interval = "1" Value="0"/>
+                                    <Label FontSize="14" Grid.Column="6" Content="Progress:"  VerticalContentAlignment="Center" Width="Auto" />
+                                    <ProgressBar x:Name="PBPPM" Grid.Column="7"/>
+                                </Grid>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Name="TabPVM" Header="Profile Velocity Mode" BorderThickness="0.5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <!--<ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>-->
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <GroupBox x:Name="pvmGroupBox" Header="Profile Velocity Mode" Grid.Row="1" Height="Auto" VerticalAlignment="Stretch"  HorizontalAlignment="Stretch">
+                            <Grid x:Name="pvmGrid" IsEnabled="{Binding EnableIfNoFault}" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid  Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="63*"/>
+                                        <ColumnDefinition Width="1342*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button FontSize="14" Name="HaltContinuePVM" Content="{Binding PvmDispIcon, Converter={StaticResource haltBitPvmConverter}, UpdateSourceTrigger=PropertyChanged}" Click="Button_HaltPVM" Height="50" VerticalAlignment="Top"/>
+                                    <!--<Label Grid.Column="1" VerticalContentAlignment="Center" FontSize="14" Content="Progress:"/>-->
+                                    <!--<ProgressBar x:Name="PBPVM" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,20,0,21"></ProgressBar>-->
+                                </Grid>
+
+                                <DataGrid Name="dataGridPVM" SelectionMode="Single" ColumnHeaderHeight="50" BorderThickness="1" Grid.ColumnSpan="2" Grid.Row="2" CanUserAddRows="False" CanUserSortColumns="False" CanUserResizeColumns="True" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" AutoGenerateColumns="False" Width="Auto" Background="White">
+                                    <DataGrid.Columns>
+                                        <DataGridTemplateColumn  Header="Velocity&#x0a;[1/min]" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <nscontrols:TwoWaySlider VerticalAlignment="Center" Value="{Binding Velocity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick ="PVM_DoubleClick_TargetVelocity" Maximum="{Binding MaxVelSlide}" Minimum="{Binding MinVelSlide}" LargeChange="{Binding TickVel}" TickFrequency="{Binding TickVel}" Grid.ColumnSpan="3" Visibility="{Binding Vis}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn  Header="Acceleration&#x0a;[1/s^2]" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Slider VerticalAlignment="Center" Height="35" Grid.Row="1" AutoToolTipPlacement="TopLeft"  Grid.ColumnSpan="5" Controls:SliderHelper.ChangeValueBy="LargeChange" MouseDoubleClick ="PVM_DoubleClick_Acceleration" LargeChange="{Binding TickAcc}" TickFrequency="{Binding TickAcc}"   Controls:SliderHelper.EnableMouseWheel="MouseHover" Style="{DynamicResource FlatSlider}" Visibility="{Binding Vis}" Maximum="{Binding MaxAccSlide}" IsSnapToTickEnabled="True" ValueChanged="Slider_ValueChanged_PVMAcc" IsMoveToPointEnabled="True" Value="{Binding Acceleration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            <Slider.LayoutTransform>
+                                                                <ScaleTransform ScaleY="1.2" ScaleX="1.5"/>
+                                                            </Slider.LayoutTransform>
+                                                        </Slider>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn  Header="Deceleration&#x0a;[1/s^2]" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Slider VerticalAlignment="Center"  Height="35" Grid.Row="1"  AutoToolTipPlacement="TopLeft" Grid.ColumnSpan="5" Controls:SliderHelper.EnableMouseWheel="MouseHover"  MouseDoubleClick ="PVM_DoubleClick_Deceleration" LargeChange="{Binding TickDec}" TickFrequency="{Binding TickDec}" Controls:SliderHelper.ChangeValueBy="LargeChange" Style="{DynamicResource FlatSlider}" Visibility="{Binding Vis}" Maximum="{Binding MaxDecSlide}" IsSnapToTickEnabled="True" ValueChanged="Slider_ValueChanged_PVMDec" IsMoveToPointEnabled="True" Value="{Binding Deceleration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            <Slider.LayoutTransform>
+                                                                <ScaleTransform ScaleY="1.2" ScaleX="1.5"/>
+                                                            </Slider.LayoutTransform>
+                                                        </Slider>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Ramp" Width="Auto">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Click="Button_ChangeRampPVM" Visibility="{Binding Vis}" Content="{Binding RampTypeText}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </GroupBox>
+
+                    </Grid>
+                </TabItem>
+                <TabItem Name="TabHM" Header="Homing" BorderThickness="0.5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox x:Name="hmGroupBox"  Header="Homing">
+                            <Grid x:Name="hmGrid" IsEnabled="{Binding EnableIfNoFault}" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="25"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <ComboBox Margin="5" Name="ComboBoxHoming" Grid.ColumnSpan="2" Height="50" VerticalAlignment="Top" ItemsSource="{Binding}" DisplayMemberPath="Value" SelectedValuePath="Key"></ComboBox>
+                                    <Button Content="Start Homing" Grid.ColumnSpan="2" FontSize="14" Width="Auto" Height="100" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Row="1"  Click="Button_Click_HOMING"/>
+                                    <Label Content="Home Offset:" Grid.Row="3" Grid.Column="0"/>
+                                    <TextBox Name="TextBoxHomeOffset" Text="0" HorizontalAlignment="Left" Width="100" Grid.Row="3" Grid.Column="1"/>
+                                    <Label Content="Index Pulse:" Grid.Row="4" Grid.Column="0"/>
+                                    <TextBox Name="TextBoxIndexPulse" Text="0" HorizontalAlignment="Left" Width="100" Grid.Row="4" Grid.Column="1"/>
+                                    <Label Content="Homing speed (fast):" Grid.Row="5" Grid.Column="0"/>
+                                    <TextBox Name="TextBoxHomingSpeedFast" Text="100" HorizontalAlignment="Left" Width="100" Grid.Row="5" Grid.Column="1"/>
+                                    <Label Content="Homing speed (slow):" Grid.Row="6" Grid.Column="0"/>
+                                    <TextBox Name="TextBoxHomingSpeedSlow" Text="5" HorizontalAlignment="Left" Width="100" Grid.Row="6" Grid.Column="1"/>
+                                    <Label Content="Homing acceleration:" Grid.Row="7" Grid.Column="0"/>
+                                    <TextBox Name="TextBoxHomingAcceleration" Text="50" HorizontalAlignment="Left" Width="100" Grid.Row="7" Grid.Column="1"/>
+                                </Grid>
+
+                            </Grid>
+                        </GroupBox>
+
+                    </Grid>
+                </TabItem>
+                <TabItem Name="TabSCOPE" Header="Scope" BorderThickness="0.5">
+                    <Grid>
+                        <ContentControl  Name="ContentScope" Content="{Binding}"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="CoE Dictionary" Visibility="Visible" BorderThickness="0.5" >
+                    <Grid Name="CoeDictGrid" Background="#FFE5E5E5">
+                        <Grid.ColumnDefinitions>
+                            <!--<ColumnDefinition Width="300" MaxWidth="480"/>-->
+                            <!--<ColumnDefinition Width="Auto"/>-->
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.Resources>
+                            <ResourceDictionary>
+
+                            </ResourceDictionary>
+                        </Grid.Resources>
+
+                        <DataGrid Name="dataGridDictionary" SelectionMode="Extended" Loaded="dataGridDictionary_Loaded" MouseDoubleClick="dataGridDictionary_MouseDoubleClick"  ItemsSource="{Binding CollectionView}"  BorderThickness="3" Grid.Column="2" CanUserAddRows="False" CanUserSortColumns="False" CanUserResizeColumns="True" Margin="48,0,0,0" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" AutoGenerateColumns="False" Width="Auto" Background="White">
+
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header=" " Width="26" IsReadOnly="True" />
+                                <DataGridTextColumn Header="Index" IsReadOnly="True" Width="60" Binding="{Binding Index, StringFormat=X4}" />
+                                <DataGridTextColumn Header="Subindex" Width="80" IsReadOnly="True"  Binding="{Binding Subindex, StringFormat=X2}" />
+                                <DataGridTextColumn Header="Name" IsReadOnly="True" Width="300" Binding="{Binding Name}" />
+                                <DataGridTemplateColumn  Header=" " Width="35">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding NumericType, Converter={StaticResource numericTypeConverter}}" Click="Button_Click_ChangeNumType" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!--<DataGridTextColumn Header="Value" IsReadOnly="{Binding Access, Converter={StaticResource dictionaryReadOnlyConverter}}" Width="300" Binding="{Binding ValueDisplay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"/>-->
+
+                                <DataGridTemplateColumn  Header="Value" Width="300">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox IsEnabled="{Binding Access, Converter={StaticResource dictionaryReadOnlyConverter}}" KeyDown="TextBoxDictionary_KeyDown" Text="{Binding ValueDisplay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" Background="{Binding Access, Converter={StaticResource dictionaryReadOnlyBackgroundConverter}}">
+                                                <!--<TextBox IsEnabled="True" KeyDown="TextBoxDictionary_KeyDown" Text="{Binding ValueDisplay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" Background="{Binding Access, Converter={StaticResource dictionaryReadOnlyBackgroundConverter}}">-->
+
+                                                <!--<TextBox.InputBindings>-->
+                                                <!--<KeyBinding Key="Esc" Command="{Binding TestCommand}"/>-->
+                                                <!--</TextBox.InputBindings>-->
+                                            </TextBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="Data Type" Width="100" IsReadOnly="True" Binding="{Binding Type}"/>
+                                <DataGridTextColumn Header="Access" Width="100" IsReadOnly="True" Binding="{Binding Access, Mode=OneTime}"/>
+                            </DataGrid.Columns>
+                            <DataGrid.GroupStyle>
+                                <GroupStyle ContainerStyleSelector="{StaticResource groupItemStyleSelector}" >
+                                </GroupStyle>
+                            </DataGrid.GroupStyle>
+
+                        </DataGrid>
+                        <Controls:HamburgerMenu x:Name="hamburgerDict" ItemsSource="{Binding}" OpenPaneLength="240" ItemClick="OnMenuItemClickDict" DisplayMode="CompactInline" ItemTemplate="{StaticResource MenuItemTemplateDict}">
+
+                        </Controls:HamburgerMenu>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="General" BorderThickness="0.5">
+                    <Grid Background="#FFFFFFFF" >
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+
+                            <RowDefinition  Height="*" />
+
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="1" >
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="251" MinHeight="251"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="3*"/>
+                            </Grid.RowDefinitions>
+
+                            <GridSplitter HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Top" 
+                  Grid.Column="1" Grid.RowSpan="1" Grid.Row="1" ResizeBehavior="PreviousAndNext"
+                  Height="3" Background="#FF8F9EA5"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="5*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <GroupBox Header="State Machine" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Width="Auto" >
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition  Height="1*" />
+                                            <RowDefinition  Height="1*" />
+                                            <RowDefinition  Height="1*" />
+                                            <RowDefinition  Height="1*" />
+                                            <RowDefinition  Height="1*" />
+                                            <RowDefinition  Height="1*" />
+                                            <RowDefinition  Height="1*" />
+                                            <RowDefinition  Height="1*" />
+                                        </Grid.RowDefinitions>
+                                        <Rectangle x:Name="statusBit0" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1"/>
+                                        <Rectangle x:Name="statusBit1" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1"/>
+                                        <Rectangle x:Name="statusBit2" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="1"/>
+                                        <Rectangle x:Name="statusBit3" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="1"/>
+                                        <Rectangle x:Name="statusBit4" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="1"/>
+                                        <Rectangle x:Name="statusBit5" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="1"/>
+                                        <Rectangle x:Name="statusBit6" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="1"/>
+                                        <Rectangle x:Name="statusBit7" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="24" Stroke="Black" VerticalAlignment="Center" Width="24" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="1"/>
+
+                                        <Label Content="Not Ready To Switch On"     FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="0" Grid.Column="1"/>
+                                        <Label Content="Switch On Disabled"         FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="1" Grid.Column="1"/>
+                                        <Label Content="Ready To Switch On"         FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="2" Grid.Column="1"/>
+                                        <Label Content="Switched On"                FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="3" Grid.Column="1"/>
+                                        <Label Content="Operation Enabled"          FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="4" Grid.Column="1"/>
+                                        <Label Content="QuickStop Active"           FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="5" Grid.Column="1"/>
+                                        <Label Content="Fault Reaction Active"      FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="6" Grid.Column="1"/>
+                                        <Label Content="Fault"                      FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="Auto" Width="Auto" Grid.Row="7" Grid.Column="1"/>
+
+
+
+                                        <Label Content="LVe" HorizontalAlignment="Left" Margin="35,0,0,20" VerticalAlignment="Bottom" Height="28" Visibility="Hidden" Grid.Column="1"/>
+                                        <Label Content="LPo" HorizontalAlignment="Left" Margin="8,0,0,20" VerticalAlignment="Bottom" Height="28" Visibility="Hidden" Grid.Column="1"/>
+                                        <Label Content="LSV" HorizontalAlignment="Left" Margin="5,0,0,20" VerticalAlignment="Bottom" Height="28" Visibility="Hidden" Grid.ColumnSpan="2"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="SM Control"  Grid.Column="1"  HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Width="auto">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                        </Grid.RowDefinitions>
+                                        <Button Content="Reset"         HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" FontSize="14" Click="Button_SetCwReset"/>
+                                        <Button Content="Shutdown"      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" FontSize="14" Click="Button_SetCwShutdown"/>
+                                        <Button Content="Switch On"     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2" FontSize="14" Click="Button_SetCwSwitchOn"/>
+                                        <Button Content="OP Enable"     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3" FontSize="14" Click="Button_SetCwEnableOP"/>
+                                        <Button Content="OP Disable"    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" FontSize="14" Click="Button_SetCwDisableOP"/>
+                                        <Button Content="Quick Stop"    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="5" FontSize="14" Click="Button_SetCwQuickStop"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="Manufacturer Status Register"  Grid.Column="2"  HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Width="auto">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+                                            <Rectangle x:Name="manuStatusBit0" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Drive is referenced" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+                                            <Rectangle x:Name="manuStatusBit1" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Blocking Event" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2">
+                                            <Rectangle x:Name="manuStatusBit2" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Undervoltage driver" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3">
+                                            <Rectangle x:Name="manuStatusBit3" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Status Brake" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4">
+                                            <Rectangle x:Name="manuStatusBit7" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="IN3 active" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5">
+                                            <Rectangle x:Name="manuStatusBit8" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="IN2 active" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="6">
+                                            <Rectangle x:Name="manuStatusBit9" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="IN1 active" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="7">
+                                            <Rectangle x:Name="manuStatusBit10" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="STOB active" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="8">
+                                            <Rectangle x:Name="manuStatusBit11" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="STOA active" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+                                            <Rectangle x:Name="manuStatusBit15" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Warning Overtemperature" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                                            <Rectangle x:Name="manuStatusBit16" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Warning Over/undervoltage Logic" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
+                                            <Rectangle x:Name="manuStatusBit17" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Warning Over/undervoltage DcLink" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal"  Grid.Column="1" Grid.Row="3">
+                                            <Rectangle x:Name="manuStatusBit21" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Fault Overtemperature" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="4">
+                                            <Rectangle x:Name="manuStatusBit22" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Fault Undervoltage Logic" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="5">
+                                            <Rectangle x:Name="manuStatusBit23" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Fault overvoltage Logic" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6">
+                                            <Rectangle x:Name="manuStatusBit24" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Fault undervoltage DcLink" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="7">
+                                            <Rectangle x:Name="manuStatusBit25" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Fault overvoltage DcLink" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8">
+                                            <Rectangle x:Name="manuStatusBit31" Fill="#FFF4F4F5" HorizontalAlignment="Center" Height="18" Stroke="Black" VerticalAlignment="Center" Width="18" />
+                                            <Label Content="Fault Hardware" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid >
+                            <GroupBox Header="Information" Grid.Row="2">
+                                <Grid >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="3*"/>
+                                        <RowDefinition Height="2*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!--MinValue="{Binding MinVal}" 
+                                        MaxValue="{Binding MaxVal}"-->
+                                    <!--OptimalRangeStartValue="{Binding OptStart}"
+                                        OptimalRangeEndValue="{Binding OptEnd}"-->
+
+                                    <!--MajorDivisionsCount="{Binding DivisionsCount}"-->
+
+                                    <nscontrols:GaugeControl x:Name="myGauge0"
+                                        Title ="{Binding Name}"
+                                        Radius="120" 
+                                        ScaleRadius="105" 
+                                        ScaleStartAngle="180" 
+                                        ScaleSweepAngle="180"
+                                        PointerLength="105" 
+                                        PointerCapRadius="35" 
+                                        MinValue="0" 
+                                        MaxValue="120" 
+                                        MajorDivisionsCount="10" 
+                                        MinorDivisionsCount="3" 
+                                        CurrentValue="{Binding CurrentValue}"
+                                        ImageSize="40,50"
+                                        RangeIndicatorThickness="10"
+                                        RangeIndicatorRadius="110"
+                                        RangeIndicatorLightRadius="10"
+                                        RangeIndicatorLightOffset="80"
+                                        ScaleLabelRadius="90"
+                                        ScaleLabelSize="40,20"
+                                        ScaleLabelFontSize="14"
+                                        ScaleLabelForeground="Black"
+                                        ScaleValuePrecision="1"
+                                        MajorTickSize="10,3"
+                                        MinorTickSize="3,1"
+                                        MajorTickColor="DarkGray"
+                                        MinorTickColor="DarkGray"
+                                        ImageOffset="-50"
+                                        GaugeBackgroundColor="Blue"
+                                        PointerThickness ="10"
+                                        OptimalRangeStartValue="0"
+                                        OptimalRangeEndValue="84" 
+                                        DialTextOffset="20"
+                                        DialText="{Binding CurrentValue, StringFormat=N1}"
+                                        Unit="{Binding Unit}"
+                                        DialTextFontSize ="20"
+                                        DialTextColor="Black"
+                                        >
+                                    </nscontrols:GaugeControl>
+                                    <Border BorderThickness="0.5" BorderBrush="{StaticResource AccentBaseColorBrush}" Grid.Column="0" Grid.Row="0"></Border>
+                                    <Border BorderThickness="0.5" BorderBrush="{StaticResource AccentBaseColorBrush}" Grid.Column="1" Grid.Row="0"></Border>
+                                    <Border BorderThickness="0.5" BorderBrush="{StaticResource AccentBaseColorBrush}" Grid.Column="0" Grid.Row="1"></Border>
+                                    <Border BorderThickness="0.5" BorderBrush="{StaticResource AccentBaseColorBrush}" Grid.Column="1" Grid.Row="1"></Border>
+                                    <nscontrols:GaugeControl x:Name="myGauge1" Grid.Column="1"
+                                        Title ="{Binding Name}"
+                                        Radius="120" 
+                                        ScaleRadius="105" 
+                                        ScaleStartAngle="180" 
+                                        ScaleSweepAngle="180"
+                                        PointerLength="105" 
+                                        PointerCapRadius="35" 
+                                        MinValue="0" 
+                                        MaxValue="76" 
+                                        MajorDivisionsCount="10" 
+                                        MinorDivisionsCount="3" 
+                                        CurrentValue="{Binding CurrentValue}"
+                                        ImageSize="40,50"
+                                        RangeIndicatorThickness="10"
+                                        RangeIndicatorRadius="110"
+                                        RangeIndicatorLightRadius="10"
+                                        RangeIndicatorLightOffset="80"
+                                        ScaleLabelRadius="90"
+                                        ScaleLabelSize="40,20"
+                                        ScaleLabelFontSize="14"
+                                        ScaleLabelForeground="Black"
+                                        ScaleValuePrecision="1"
+                                        MajorTickSize="10,3"
+                                        MinorTickSize="3,1"
+                                        MajorTickColor="DarkGray"
+                                        MinorTickColor="DarkGray"
+                                        ImageOffset="-50"
+                                        GaugeBackgroundColor="Blue"
+                                        PointerThickness ="10"
+                                        OptimalRangeStartValue="40"
+                                        OptimalRangeEndValue="60" 
+                                        DialTextOffset="20"
+                                        DialText="{Binding CurrentValue, StringFormat=N1}"
+                                        Unit="{Binding Unit}"
+                                        DialTextFontSize ="20"
+                                        DialTextColor="Black"
+                                        >
+                                    </nscontrols:GaugeControl>
+
+                                </Grid>
+                            </GroupBox>
+
+
+                        </Grid>
+
+
+                        <GridSplitter HorizontalAlignment="Right" 
+                  VerticalAlignment="Stretch" 
+                  Grid.Column="1" Grid.RowSpan="3" ResizeBehavior="PreviousAndNext"
+                  Width="5" Background="#FF8F9EA5"/>
+                        <StackPanel Grid.Row="2" Grid.Column="2" >
+                            <!--<Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>-->
+
+                            <GroupBox Header="Emergeny Messages">
+                                <DataGrid x:Name="dataGridEmcyMsgs" HeadersVisibility="None" SelectionMode="Single" BorderThickness="1"  CanUserAddRows="false" CanUserSortColumns="False" CanUserResizeColumns="False" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" AutoGenerateColumns="False" Width="Auto" Background="White">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn IsReadOnly="True" Width="Auto" Header=" " Binding="{Binding SequenceNumber}" FontSize="14" />
+                                        <DataGridTextColumn Header="Unit" IsReadOnly="True" Width="Auto" Binding="{Binding Msg}" FontSize="14"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <!--<StackPanel>
+                                <Label Content="Message 1"/>
+                                <Label Content="Message 2"/>
+                                <Label Content="Message 3"/>
+                                <Label Content="Message 4"/>
+                                <Label Content="Message 5"/>
+                                <Label Content="Message 6"/>
+                                <Label Content="Message 7"/>
+                                <Label Content="Message 8"/>
+                            </StackPanel>-->
+                            </GroupBox>
+
+                            <GroupBox Header="Select Network Adapter"  HorizontalAlignment="Stretch" VerticalAlignment="Top"  Width="Auto" >
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="Scan Adapters" Height="27" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="92" Click="ScanAdapters_Click"/>
+                                    <ComboBox x:Name="CmbxNetworkAdapter" Grid.Column="1" ItemsSource="{Binding}" SelectionChanged="CmbxNetworkAdapter_SelectionChanged"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="File Access Over EtherCAT"  HorizontalAlignment="Stretch" VerticalAlignment="Top"  Width="Auto" >
+                                <Grid Name="GridFoE">
+                                    <Button Name="bttnFwUpdate" Click="Start_FW_Update_Button_Click">Start Firmware Update</Button>
+                                    <Controls:ProgressRing x:Name="progRingSFwUpdate" IsActive="False" IsHitTestVisible="False" />
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="E-CAT StateMachine Switch" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Width="Auto" >
+                                <!--<CheckBox>Communication over EoE</CheckBox>-->
+                                <Grid Name="GridSmEcat">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Click="Button_Click_Request_SM_Boot" Width="60" Content="Boot"/>
+                                        <Button Click="Button_Click_Request_SM_Init" Width="60" Content="Init"/>
+                                        <Button Click="Button_Click_Request_SM_PreOp" Width="60" Content="Pre-OP"/>
+                                        <Button Click="Button_Click_Request_SM_SafeOp" Width="60" Content="Safe-op"/>
+                                        <Button Click="Button_Click_Request_SM_Oper" Width="60" Content="Oper"/>
+                                    </StackPanel>
+                                    <Controls:ProgressRing x:Name="progRingSM" IsActive="False" IsHitTestVisible="False" HorizontalAlignment="Left"/>
+                                </Grid>
+
+                            </GroupBox>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+        
+
+        <GridSplitter HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Top" Grid.Row="2"
+                  Grid.Column="0" ResizeBehavior="PreviousAndNext"
+                  Height="5" Background="#FF8F9EA5"/>
+
+        <DataGrid Name="dataGridNotifications" Grid.Row="3" ItemsSource="{Binding}">
+        </DataGrid>
+
+    </Grid>
+</Controls:MetroWindow>

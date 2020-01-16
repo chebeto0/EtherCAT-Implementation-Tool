@@ -1,0 +1,527 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EtherCAT_Master.App" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.MainWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>fATUCtgBEpDDGBLRcjAq4Q9DDY4GoPDo2VlTQgptIYU=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.HambMenuItemScope" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACIAFAAAAACAAAKIAAAIQAgBAAAwAAAAAAAAUAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.HambViewModelScope" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAACAAAIAAAAAAAgBAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.HambMenuItemDict" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACIAAAAAAIAAAAIKAAAIQAgAAAAgAAAAAAgAEAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.GroupItemStyleSelector" Collapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Communication.CommunicationBase" Collapsed="true">
+    <Position X="4.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQQAAAAgCAEQQAAIAAIgAAAwEAAAAAABAAAEAAAIAA=</HashCode>
+      <FileName>Core\Communication\CommunicationBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Communication.CommunicationDummy" Collapsed="true">
+    <Position X="2" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAgAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Communication\CommunicationDummy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Communication.CommunicationSOEM" Collapsed="true">
+    <Position X="4.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQggAAAgIAlAQSEooAoBAgAKGgNIgAWAIBQSCCIUAA=</HashCode>
+      <FileName>Core\Communication\CommunicationSOEM.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Communication.CMD" Collapsed="true">
+    <Position X="13.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Core\Communication\CommunicationUDP.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Communication.CommunicationUDP" Collapsed="true">
+    <Position X="6.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQABAAAgwJAQQgAAACIAwAAAgAAAAEAEACwBAAAIAA=</HashCode>
+      <FileName>Core\Communication\CommunicationUDP.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.HaltBitPvmConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.BoolInvertConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.DictionaryReadOnlyBackgroundConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.DictionaryReadOnlyConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.EcStateToStringConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.NumericTypeConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.GroupSizeToExpanderConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.StatuswordColorConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\Converters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.DriveSwitch" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\DriveSwitch.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.EtherCatControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAQAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\EtherCatControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.GaugeControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RngYLASEUhDjE9gSLEvQMAvtCQJFYCkhwIAxOpyKWQg=</HashCode>
+      <FileName>Core\Controls\GaugeControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.IpTextBox" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQMAAAAAkICIBgAAABEAAAAAgABQCAAAAAIQCzAA=</HashCode>
+      <FileName>Core\Controls\IpTextBox.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.ModeSpecificBits" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\MSBUserControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.ScopeUserControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\ScopeUserControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.TwoWaySlider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAICAAAQAAIBCQgAQJIABgEAAAAIAAAAgAAAAEBA=</HashCode>
+      <FileName>Core\Controls\TwoWaySlider.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.ColorToSolidColorBrushConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.ImageOffsetConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.RadiusToDiameterConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.PointerCenterConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.RangeIndicatorLightPositionConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.SizeConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.GlassEffectWidthConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.BackgroundColorConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.UdpCommControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAEAAAAAAAAAAoAACAAAAAAEAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\UdpCommControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Controls.UserControl1" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Controls\UserControl1.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.CtrlDgItem" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QoACBwEAkBIDAAgAIsDACSgCghA4AgiZAAEkAYAFQoA=</HashCode>
+      <FileName>Core\CtrlDgItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.EmergencyMessage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAIAgABAAAgAAARAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Core\EmergencyMessage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.ErrorNotifications" Collapsed="true">
+    <Position X="10.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\ErrorNotifications.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.ErrorNotificationsViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAIAAAAAAAgBAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Core\ErrorNotifications.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Extensions" Collapsed="true">
+    <Position X="15.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Extensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.GaugeItem" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCBAAAAAAAAQAIAAIAgAgAQQgEAAAAAAQAEAAAAAABA=</HashCode>
+      <FileName>Core\GaugeItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.HomingMethods" Collapsed="true">
+    <Position X="13.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAgAQAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Core\HomingMethods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.IntecColors" Collapsed="true">
+    <Position X="17.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EACAAAAAAgAAAAAAAAAUEAAAAAAAAAAAIAAQAAAGAgA=</HashCode>
+      <FileName>Core\IntecColors.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.MultimediaTimer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIABAAAACAABAAEAIAAQCCAAAEgAAAAIAAACAAAQAA=</HashCode>
+      <FileName>Core\MultimediaTimer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.NativeMethods" Collapsed="true">
+    <Position X="12" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Core\MultimediaTimer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.OMBitsLabel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAIAAAAAABgAIAAIBAAwAAAAAgAAA=</HashCode>
+      <FileName>Core\OMBitsLabel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.OtherVendorDevice" Collapsed="true">
+    <Position X="5.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\OtherVendorDevice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.PCS" Collapsed="true">
+    <Position X="7.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MAgQSgkgIQAEAQBCgbARGKIQMAQqhkIQANAAABBFAAA=</HashCode>
+      <FileName>Core\PCS.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.PlotViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AM4AAAAAACAAAAQCJACAAAIAgAAAAAAQAAABAAAAQAA=</HashCode>
+      <FileName>Core\PlotViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.ObjectToPlotInterface" Collapsed="true">
+    <Position X="15.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Core\PlotViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.ScopeControl" Collapsed="true">
+    <Position X="13.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAQACAAgAIgAAgAGAAAAgAEAAAAAAAQCAAAAgAAg=</HashCode>
+      <FileName>Core\ScopeControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.CsvWriteItem" Collapsed="true">
+    <Position X="17.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Core\ScopeControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.SlaveDeviceBase" Collapsed="true">
+    <Position X="6.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAKAAAAAAIgAAAAAAhAAAACAAAAAIAAAAAgA=</HashCode>
+      <FileName>Core\SlaveDevice.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.StateMachine" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACgQAEAIQCCEpiBAYYAQCO4EiACAAUAAAAICEBEAAMA=</HashCode>
+      <FileName>Core\StateMachine.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Dictionary.DictionaryBuilder" Collapsed="true">
+    <Position X="20.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAIQJABAEAkAAAAAAwAAAQVAAAAQEAAIAAAAkA=</HashCode>
+      <FileName>Core\Dictionary\DictionaryBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Dictionary.DictItem" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AJAAAACAAAAAAEQAIAAEAARQiAAgAAAABSkgEAAAAgg=</HashCode>
+      <FileName>Core\Dictionary\DictItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.Dictionary.DictItemViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAQgAAAAAABBAgAEEIAAAA=</HashCode>
+      <FileName>Core\Dictionary\DictItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.UDP.UdpBase" Collapsed="true">
+    <Position X="1.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAACAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQ=</HashCode>
+      <FileName>Core\UDP\UdpBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EtherCAT_Master.Core.UDP.UdpListener" Collapsed="true">
+    <Position X="0.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\UDP\UdpListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Core.UDP.UdpUser" Collapsed="true">
+    <Position X="2.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\UDP\UdpUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Properties.Resources">
+    <Position X="1" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EtherCAT_Master.Properties.Settings">
+    <Position X="3" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="EtherCAT_Master.Core.Communication.Ret" Collapsed="true">
+    <Position X="12" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Core\Communication\CommunicationSOEM.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="EtherCAT_Master.Core.UDP.Received" Collapsed="true">
+    <Position X="10.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAIAAA=</HashCode>
+      <FileName>Core\UDP\UdpBase.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="EtherCAT_Master.Core.Communication.CommType" Collapsed="true">
+    <Position X="10.25" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAABAQAAAAAAA=</HashCode>
+      <FileName>Core\Communication\CommunicationBase.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EtherCAT_Master.Core.EC_SM" Collapsed="true">
+    <Position X="12" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAgAAAAAAFAAAAAABAAhAAAAAAAAAAACA=</HashCode>
+      <FileName>Core\SlaveDevice.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EtherCAT_Master.Core.Dictionary.NUM_TYPE" Collapsed="true">
+    <Position X="13.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACIAAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Core\Dictionary\DictionaryBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="EtherCAT_Master.Core.MultimediaTimerCallback" Collapsed="true">
+    <Position X="10.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\MultimediaTimer.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
