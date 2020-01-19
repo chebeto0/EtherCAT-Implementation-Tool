@@ -11,7 +11,7 @@
         Closing="Window_Closing"
         ContentRendered="Window_ContentRendered"
         Loaded="Window_Loaded"
-        Name ="MWindow" Title="INTEC EtherCAT Implementation Tool" Height="900" Width="1600" Background="White">
+        Name ="MWindow" Title="INTEC EtherCAT Implementation Tool V0.1" Height="900" Width="1600" Background="White">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -197,7 +197,7 @@
             <GroupBox  Header="Comm" Grid.Column="0" Margin="5" >
                 <StackPanel x:Name="ChooseComm" IsEnabled="{Binding Connected, Converter={StaticResource boolInvertConverter}}">
                     <RadioButton Name="RadButEcat" Content="EtherCAT" Checked="RadButEcat_Checked"/>
-                    <RadioButton Name="RadButUdp" Content="UDP/IP" Checked="RadButUdp_Checked"/>
+                    <RadioButton Name="RadButUdp" Content="UDP/IP" Checked="RadButUdp_Checked" IsEnabled="False"/>
 
                 </StackPanel>
             </GroupBox>

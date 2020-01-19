@@ -54,12 +54,12 @@ namespace EtherCAT_Master
         public readonly string exePath; 
 
         private ModeSpecificBits _modeSpecBits = new ModeSpecificBits();
-        private readonly DriveSwitch _driveSwitch = new DriveSwitch();
+        private readonly DriveSwitch DriveSwitch = new DriveSwitch();
         public DictionaryBuilder ObjectDictionary;
 
         private readonly ScopeUserControl _scopeUserControl = new ScopeUserControl();
 
-        private UserControl _commControl;
+        private UserControl CommControl;
 
         public int AdapterNumber = 0;
 
@@ -276,7 +276,7 @@ namespace EtherCAT_Master
             driveSequence.Columns[3].Header = "Deceleration\n[1/s\xB2]";
 
             /* Set the data context of the Mode-Specific-Bit Control to respective object */
-            _driveSwitch.ContentGeneralModeSpecBits.DataContext = _modeSpecBits;
+            DriveSwitch.ContentGeneralModeSpecBits.DataContext = _modeSpecBits;
             /////////////////////////////////////////////////////////////////////////////
             ///////////////////////////// ErrorNoti.Items //////////////////////////////
             /////////////////////////////////////////////////////////////////////////////
@@ -288,15 +288,15 @@ namespace EtherCAT_Master
             /////////////////////////////////////////////////////////////////////////////
             //////////////////////////////// Drive Switch ///////////////////////////////
             /////////////////////////////////////////////////////////////////////////////
-            ContentSwitchDS.DataContext = _driveSwitch;
-            _driveSwitch.IsEnabled = false;
+            ContentSwitchDS.DataContext = DriveSwitch;
+            DriveSwitch.IsEnabled = false;
             
 
             /////////////////// Command declaration for Drive Switch 
             var cb = new CommandBinding(CommandEnable,
                 CommandExecute, MyCommandCanExecute);
             this.CommandBindings.Add(cb);
-            _driveSwitch.CmdSM.Command = CommandEnable;
+            DriveSwitch.CmdSM.Command = CommandEnable;
             var kg = new KeyGesture(Key.M, ModifierKeys.Control);
             var ib = new InputBinding(CommandEnable, kg);
             this.InputBindings.Add(ib);
@@ -365,9 +365,9 @@ namespace EtherCAT_Master
         /// <param name="e"></param>
         private void RadButEcat_Checked(object sender, RoutedEventArgs e)
         {
-            _commControl = new EtherCatControl(this);
-            CommContentControl.DataContext = _commControl;
-            (_commControl as EtherCatControl).dataGridDevices.SelectedCellsChanged += dataGridDevices_SelectedCellsChanged;
+            CommControl = new EtherCatControl(this);
+            CommContentControl.DataContext = CommControl;
+            (CommControl as EtherCatControl).dataGridDevices.SelectedCellsChanged += dataGridDevices_SelectedCellsChanged;
             CommContentControl.IsEnabled = true;
         }
 
@@ -378,9 +378,9 @@ namespace EtherCAT_Master
         /// <param name="e"></param>
         private void RadButUdp_Checked(object sender, RoutedEventArgs e)
         {
-            _commControl = new UdpCommControl(this);
-            CommContentControl.DataContext = _commControl;
-            (_commControl as UdpCommControl).dataGridDevices.SelectedCellsChanged += dataGridDevices_SelectedCellsChanged;
+            CommControl = new UdpCommControl(this);
+            CommContentControl.DataContext = CommControl;
+            (CommControl as UdpCommControl).dataGridDevices.SelectedCellsChanged += dataGridDevices_SelectedCellsChanged;
             CommContentControl.IsEnabled = true;
         }
         
@@ -559,9 +559,9 @@ namespace EtherCAT_Master
                 _scopeUserControl.scope1.DataContext = device.scopeControl.plotScope;
 
                 dataGridEmcyMsgs.ItemsSource = device.EmcyMsgs;
-                _driveSwitch.CmdSM.DataContext = device.stateMachineDsp402;
-                _driveSwitch.statusLabel.DataContext = device.stateMachineDsp402;
-                _driveSwitch.IsEnabled = true;
+                DriveSwitch.CmdSM.DataContext = device.stateMachineDsp402;
+                DriveSwitch.statusLabel.DataContext = device.stateMachineDsp402;
+                DriveSwitch.IsEnabled = true;
                 _modeSpecBits.DataContext = device.OmBits;
                 HaltContinuePVM.DataContext = device;
                 ppmGrid.DataContext = device.stateMachineDsp402;
@@ -793,6 +793,13 @@ namespace EtherCAT_Master
                 await Task.Delay(400);
 
                 Communication.Disconnect();
+
+                await Task.Delay(400);
+
+                ObjectDictionary.Dispose();
+                DictionaryStartUp();
+                dataGridDictionary.DataContext = ObjectDictionary.DictViewModel;
+
             }
             catch (Exception err)
             {

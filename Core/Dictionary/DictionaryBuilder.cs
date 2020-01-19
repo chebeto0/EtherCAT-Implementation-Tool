@@ -37,6 +37,7 @@ namespace EtherCAT_Master.Core.Dictionary
         public DictItemViewModel DictViewModel;
 
         public Dictionary<string, string> simpleDict = new Dictionary<string, string>();
+        private bool _disposed;
 
         public DictionaryBuilder(string file)
         {
@@ -430,6 +431,18 @@ namespace EtherCAT_Master.Core.Dictionary
             {
                 FormatDisplayString(item);
             }
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                //if (disposing)
+                //{
+                //}
+            }
+            _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
 
