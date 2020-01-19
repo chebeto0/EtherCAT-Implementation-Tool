@@ -51,7 +51,7 @@ namespace EtherCAT_Master
         private const int HALT_BIT = 0x0100;
 
         /* Path to the program executable */
-        private readonly string _exePath; 
+        public readonly string exePath; 
 
         private ModeSpecificBits _modeSpecBits = new ModeSpecificBits();
         private readonly DriveSwitch _driveSwitch = new DriveSwitch();
@@ -104,7 +104,7 @@ namespace EtherCAT_Master
             Communication = new CommunicationDummy();
 
             /* Get path to the executable of the application*/
-            _exePath = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
+            exePath = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
             InitializeComponent();
             
@@ -168,12 +168,12 @@ namespace EtherCAT_Master
             WindowState = WindowState.Maximized;/* Maximize Main Window */
 
             /* Get image*/
-            var uri = new Uri(_exePath + @"\Images\20171122_Logo_NodeMaster_EC.png");
+            var uri = new Uri(exePath + @"\Images\20171122_Logo_NodeMaster_EC.png");
             var bitmapImage = new BitmapImage(uri);
             //INTECLogo.Source = bitmapImage;
 
             /* Get the "Intec" Icon */
-            uri = new Uri(_exePath + @"\Images\intec_icon.ico"); 
+            uri = new Uri(exePath + @"\Images\intec_icon.ico"); 
             bitmapImage = new BitmapImage(uri);
             Icon = bitmapImage;
             
@@ -628,20 +628,21 @@ namespace EtherCAT_Master
                     {
                         await Task.Run(() =>
                         {
-                            device.SetControlWord(StateMachine.SM_CW_FAULT_RESET, 0x0100);
+                            device.SetControlWordPdo(StateMachine.SM_CW_FAULT_RESET, 0x0100);
                         });
 
                         await Task.Delay(100);
 
                         await Task.Run(() =>
                         {
-                            device.SetControlWord(StateMachine.SM_CW_DISABLE_VOLT, 0x0100);
+                            device.SetControlWordPdo(StateMachine.SM_CW_DISABLE_VOLT, 0x0100);
                         });
 
                         if (device.EcStateMachine == EC_SM.EC_STATE_PRE_OP)
                         {
                             await Task.Delay(100);
-                            //device.StateMach.StateWord = (ushort)device.SdoRead(0x6041, 0x00, 2, false);
+                            //device.StateMach.StateWord = (ushort)
+                                //device.SdoRead(0x6041, 0x00);
                         }
 
                         Dispatcher.Invoke(() =>
@@ -654,18 +655,20 @@ namespace EtherCAT_Master
                     }
                     else if (device.stateMachineDsp402.IS_OPERATION_ENABLED())
                     {
+                        Console.WriteLine("Is Operation Enabled");
                         await Task.Run(() =>
                         {
                             StopDriveSequence();
                             device.SetOperMode0();
-                            device.SetControlWord(StateMachine.SM_CW_SHUTDOWN, 0x0100); 
+                            device.SetControlWordPdo(StateMachine.SM_CW_SHUTDOWN, 0x0100);
                         });
                     }
                     else if (!device.stateMachineDsp402.IS_OPERATION_ENABLED())
                     {
-                        device.SetControlWord(StateMachine.SM_CW_SHUTDOWN, 0x0100);
+                        Console.WriteLine("NOT Operation Enabled");
+                        device.SetControlWordPdo(StateMachine.SM_CW_SHUTDOWN, 0x0100);
                         await Task.Delay(150);
-                        device.SetControlWord(StateMachine.SM_CW_ENABLE_OP, 0x0100); 
+                        device.SetControlWordPdo(StateMachine.SM_CW_ENABLE_OP, 0x0100); 
                         
                         switch(Tabs.SelectedIndex)
                         {
@@ -767,7 +770,7 @@ namespace EtherCAT_Master
                     {
                         if (device is PCS)
                         {
-                            device.SetControlWord(StateMachine.SM_CW_DISABLE_VOLT, 0);
+                            device.SetControlWordPdo(StateMachine.SM_CW_DISABLE_VOLT, 0);
                             
                             StopDriveSequence();
 
@@ -803,7 +806,7 @@ namespace EtherCAT_Master
         private void DictionaryStartUp()
         {
             /* Construct the dictionary from the path to the ESI file. */
-            ObjectDictionary = new DictionaryBuilder(Path.Combine(_exePath, @"ESI\INTEC_PCS.xml"));
+            ObjectDictionary = new DictionaryBuilder(Path.Combine(exePath, @"ESI\INTEC_PCS.xml"));
         }
 
         #endregion
@@ -1293,7 +1296,7 @@ namespace EtherCAT_Master
                 DS_SM _actions;
                 bool _stop_ds_flag = false;
                     
-                device.SetControlWord(device.CurrentCW, 0x0120); /* New positioning and  */
+                device.SetControlWordPdo(device.CurrentCW, 0x0120); /* New positioning and  */
 
                 Dispatcher.Invoke(() =>
                 {
@@ -1360,13 +1363,13 @@ namespace EtherCAT_Master
                             switch (_actions) /* State Machine to control the process of the start of the positioning */
                             {
                                 case DS_SM.START_POSITIONING:
-                                    device.SetControlWord(device.CurrentCW, 0x0030); /* CW Set bit 4 and 5 */
+                                    device.SetControlWordPdo(device.CurrentCW, 0x0030); /* CW Set bit 4 and 5 */
                                     _actions = DS_SM.RELEASE_POSITIONING;
                                     break;
                                 case DS_SM.RELEASE_POSITIONING:
                                     if (device.stateMachineDsp402.SetPointAcknowledged)
                                     {
-                                        device.SetControlWord(device.CurrentCW, 0x0000); /* CW Reset bit 4 and 5 */
+                                        device.SetControlWordPdo(device.CurrentCW, 0x0000); /* CW Reset bit 4 and 5 */
                                         _actions = DS_SM.WAIT_FOR_TARGET_REACHED;
                                         /* clear bit 10 (to achieve rising edge (because of timings)) */
                                         device.stateMachineDsp402.StateWord &= 0xFBFF; 
@@ -1450,7 +1453,7 @@ namespace EtherCAT_Master
             {
                 if (!ds_halted)
                 {
-                    device.SetControlWord(device.CurrentCW, HALT_BIT);
+                    device.SetControlWordPdo(device.CurrentCW, HALT_BIT);
                     ds_halted = true;
                     mrse.Reset();
                     HaltContinueDS.Content = new PackIconMaterial() { Kind = PackIconMaterialKind.Play };
@@ -1458,7 +1461,7 @@ namespace EtherCAT_Master
                 }
                 else
                 {
-                    device.SetControlWord(device.CurrentCW, 0x0000);
+                    device.SetControlWordPdo(device.CurrentCW, 0x0000);
                     await Task.Delay(5);
                     mrse.Set();
                     ds_halted = false;
@@ -1593,14 +1596,14 @@ namespace EtherCAT_Master
                     {
                         await Task.Run(() =>
                         {
-                            device.SetControlWord(device.CurrentCW, 0x0100); /* Set halt bit */
+                            device.SetControlWordPdo(device.CurrentCW, 0x0100); /* Set halt bit */
                             device.SetTargetVelocity(Convert.ToInt32(obj_dg_pvm[0].Velocity));
                             device.SetProfileAcceleration(Convert.ToUInt32(obj_dg_pvm[0].Acceleration));
                             device.SetProfileDeceleration(Convert.ToUInt32(obj_dg_pvm[0].Deceleration));
                         });
                         await Task.Run(() =>
                         {
-                            device.SetControlWord(device.CurrentCW, 0x0000); /* Reset halt bit */
+                            device.SetControlWordPdo(device.CurrentCW, 0x0000); /* Reset halt bit */
                         });
                     }
                     else
@@ -1609,14 +1612,14 @@ namespace EtherCAT_Master
                         {
                             await Task.Run(() =>
                             {
-                                device.SetControlWord(device.CurrentCW, 0x000);
+                                device.SetControlWordPdo(device.CurrentCW, 0x000);
                             });
                         }
                         else
                         {
                             await Task.Run(() =>
                             {
-                                device.SetControlWord(device.CurrentCW, 0x100);
+                                device.SetControlWordPdo(device.CurrentCW, 0x100);
                             });
                         }
                     }
@@ -2038,7 +2041,21 @@ namespace EtherCAT_Master
                 }
                 catch (Exception err)
                 {
-                    MessageBox.Show(err.ToString());
+                    if (err.HResult == -2146233066)
+                    {
+                        item.Access = "RWR";
+                    }
+                    else if (err.HResult == -2146233033)
+                    {
+                        item.Access = "RWR";
+                        MessageBox.Show("The input has the wrong format.");
+                    }
+                    else
+                    {
+                        MessageBox.Show(err.ToString());
+                    }
+
+
                 }
             }
             else
@@ -2246,7 +2263,7 @@ namespace EtherCAT_Master
                     || device.EcStateMachine == EC_SM.EC_STATE_PRE_OP
                     || Communication.commType == CommType.COMM_UDP)
                     {
-                        device.SetControlWord(StateMachine.SM_CW_FAULT_RESET, 0x0100);
+                        device.SetControlWordPdo(StateMachine.SM_CW_FAULT_RESET, 0x0100);
                     }
                 }
             });
@@ -2259,7 +2276,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWord(StateMachine.SM_CW_SHUTDOWN, 0x0100);
+                    device.SetControlWordPdo(StateMachine.SM_CW_SHUTDOWN, 0x0100);
                 }
             });
         }
@@ -2273,7 +2290,7 @@ namespace EtherCAT_Master
                     var device = Communication.Devices[SelectedDevice] as PCS;
                     //if ((int)device.EcStateMachine > 2)
                     //{
-                        device.SetControlWord(StateMachine.SM_CW_SWITCH_ON, 0x0100);
+                        device.SetControlWordPdo(StateMachine.SM_CW_SWITCH_ON, 0x0100);
                     //}
                 }
             });
@@ -2286,7 +2303,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWord(StateMachine.SM_CW_ENABLE_OP, 0x0100);
+                    device.SetControlWordPdo(StateMachine.SM_CW_ENABLE_OP, 0x0100);
                 }
             });
         }
@@ -2298,7 +2315,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWord(StateMachine.SM_CW_DISABLE_OP, 0x0100);
+                    device.SetControlWordPdo(StateMachine.SM_CW_DISABLE_OP, 0x0100);
                 }
             });
         }
@@ -2310,7 +2327,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWord(StateMachine.SM_CW_QUICK_STOP, 0x0000);
+                    device.SetControlWordPdo(StateMachine.SM_CW_QUICK_STOP, 0x0000);
                 }
             });
         }

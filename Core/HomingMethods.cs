@@ -64,9 +64,9 @@ namespace EtherCAT_Master.Core
 
             drive.COMM.AsyncWrite(drive.SlaveNumber, 0x6098, 0x00, home_method); //Homing Method
 
-            drive.SetControlWord(drive.CurrentCW, 0x00);
+            drive.SetControlWordPdo(drive.CurrentCW, 0x00);
             await Task.Delay(10);
-            drive.SetControlWord(drive.CurrentCW, 0x10);
+            drive.SetControlWordPdo(drive.CurrentCW, 0x10);
         }
 
         protected void OnPropertyChanged(string name)

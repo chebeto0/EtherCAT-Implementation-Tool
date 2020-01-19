@@ -31,7 +31,6 @@ namespace EtherCAT_Master.Core.Dictionary
         private string type;
         private string access;
         private int bit_size;
-        private readonly string[] types_access = new string[3] { "ro", "rw", "wo" };
 
         public Dictionary<string, DictItem> dictOfCoE = new Dictionary<string, DictItem>();
         public ObservableCollection<DictItem> listOfCoE = new ObservableCollection<DictItem>();

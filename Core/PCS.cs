@@ -475,7 +475,7 @@ namespace EtherCAT_Master.Core
         /// </summary>
         /// <param name="controlword">Base DSP402 command</param>
         /// <param name="extra_bits">Extra bits like Halt Bit, New Set Point, etc.</param>
-        public void SetControlWord(ushort controlword, ushort extra_bits)
+        public void SetControlWordPdo(ushort controlword, ushort extra_bits)
         {
             CurrentEB = extra_bits;
             CurrentCW = controlword;

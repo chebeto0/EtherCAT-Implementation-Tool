@@ -348,7 +348,15 @@ namespace EtherCAT_Master.Core.Communication
                         break;
                     case "UINT":
                         lock (comm_locker)
+                        {
+
+                            if (index== 0x6040 && subindex == 0)
+                            {
+                                (Devices[slave_number - 1] as PCS).Controlword = (ushort)value;
+                            }
+
                             ret = SdoWriteUInt16(slave_number, index, subindex, (ushort)value);
+                        }
                         break;
                     case "DINT":
                         lock (comm_locker)

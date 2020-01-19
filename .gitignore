@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/MahApps.Metro/DebugNET40/ControlzEx.dll
+/MahApps.Metro/DebugNET40/JetBrains.Annotations.dll
+/MahApps.Metro/DebugNET40/MahApps.Metro.dll
+/MahApps.Metro/DebugNET40/System.Windows.Interactivity.dll

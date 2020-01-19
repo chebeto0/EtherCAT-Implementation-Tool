@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,6 +34,11 @@ namespace EtherCAT_Master.Core.Communication
             get { return _connected; }
             set
             {
+                //if (_connected == true && value == false)
+                //{
+                //    MW.ObjectDictionary = new Core.Dictionary.DictionaryBuilder(Path.Combine(MW.exePath, @"ESI\INTEC_PCS.xml"));
+                //}
+
                 _connected = value;
                 OnPropertyChanged("Connected");
             }
