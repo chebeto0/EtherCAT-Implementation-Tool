@@ -287,13 +287,35 @@ namespace EtherCAT_Master.Core.Dictionary
             }
             else if (item.NumericType == NUM_TYPE.BIN)
             {
+                string temp_str;
+
                 switch (item.Type)
                 {
                     case "SINT":
-                        item.ValueDisplay = Regex.Replace(Convert.ToString(Convert.ToSByte(item.Value), 2).PadLeft(8, '0'), @".{4}", @"$0 ");
+                        temp_str = Convert.ToString(Convert.ToSByte(item.Value), 2).PadLeft(8, '0');
+
+                        if (temp_str.Length <= 8)
+                        {
+                            item.ValueDisplay = Regex.Replace(temp_str, @".{4}", @"$0 ");
+                        }
+                        else
+                        {
+                            item.ValueDisplay = Regex.Replace(TruncateToEnd(temp_str, 8), @".{4}", @"$0 ");
+                        }
                         break;
                     case "USINT":
                         item.ValueDisplay = Regex.Replace(Convert.ToString(Convert.ToByte(item.Value), 2).PadLeft(8, '0'), @".{4}", @"$0 ");
+
+                        temp_str = Convert.ToString(Convert.ToByte(item.Value), 2).PadLeft(8, '0');
+
+                        if (temp_str.Length <= 8)
+                        {
+                            item.ValueDisplay = Regex.Replace(temp_str, @".{4}", @"$0 ");
+                        }
+                        else
+                        {
+                            item.ValueDisplay = Regex.Replace(TruncateToEnd(temp_str, 8), @".{4}", @"$0 ");
+                        }
                         break;
                     case "INT":
                         item.ValueDisplay = Regex.Replace(Convert.ToString((short)item.Value, 2).PadLeft(16, '0'), @".{4}", @"$0 ");
@@ -312,6 +334,13 @@ namespace EtherCAT_Master.Core.Dictionary
                 }
             }
 
+        }
+
+        public static string TruncateToEnd(string str, int start)
+        {
+            int len = str.Length - start;
+
+            return str.Substring(start, len);
         }
 
         public static void SetValueFromDisplayString(DictItem item)

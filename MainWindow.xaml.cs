@@ -395,6 +395,9 @@ namespace EtherCAT_Master
                 {
                     hamburgerDict.IsPaneOpen = true;
                     dataGridDictionary.Margin = new Thickness(240, 0, 0, 0);
+
+                    HambMenuDict[2].TxtBox.Text = "";
+
                     HambMenuDict[2].TxtBox.Focusable = true;
                     Keyboard.Focus(HambMenuDict[2].TxtBox);
                 }
@@ -794,11 +797,11 @@ namespace EtherCAT_Master
 
                 Communication.Disconnect();
 
-                await Task.Delay(400);
+                //await Task.Delay(400);
 
-                ObjectDictionary.Dispose();
-                DictionaryStartUp();
-                dataGridDictionary.DataContext = ObjectDictionary.DictViewModel;
+                //ObjectDictionary.Dispose();
+                //DictionaryStartUp();
+                //dataGridDictionary.DataContext = ObjectDictionary.DictViewModel;
 
             }
             catch (Exception err)
