@@ -481,6 +481,10 @@ namespace EtherCAT_Master.Core
             CurrentCW = controlword;
             Controlword = (ushort)(controlword | extra_bits);
         }
+        public void SetControlWordPdoNoExtraBit(ushort controlword)
+        {
+            Controlword = (ushort)(controlword | CurrentEB);
+        }
 
 
     }

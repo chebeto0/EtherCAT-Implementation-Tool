@@ -343,7 +343,8 @@ namespace EtherCAT_Master
             homing = new HomingMethods();
 
             ComboBoxHoming.ItemsSource = homing.methodDict;
-            
+            ComboBoxHoming.SelectedIndex = 30;
+
             /////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////
@@ -665,6 +666,10 @@ namespace EtherCAT_Master
                             device.SetOperMode0();
                             device.SetControlWordPdo(StateMachine.SM_CW_SHUTDOWN, 0x0100);
                         });
+                    }
+                    else if(device.stateMachineDsp402.IS_QUICK_STOP_ACTIVE())
+                    {
+                        device.SetControlWordPdo(StateMachine.SM_CW_DISABLE_VOLT, 0x0100);
                     }
                     else if (!device.stateMachineDsp402.IS_OPERATION_ENABLED())
                     {
@@ -1610,6 +1615,8 @@ namespace EtherCAT_Master
                             device.SetTargetVelocity(Convert.ToInt32(obj_dg_pvm[0].Velocity));
                             device.SetProfileAcceleration(Convert.ToUInt32(obj_dg_pvm[0].Acceleration));
                             device.SetProfileDeceleration(Convert.ToUInt32(obj_dg_pvm[0].Deceleration));
+
+                            device.SdoWrite(0x60FF, 0x00, Convert.ToInt32(obj_dg_pvm[0].Velocity));
                         });
                         await Task.Run(() =>
                         {
@@ -1622,6 +1629,12 @@ namespace EtherCAT_Master
                         {
                             await Task.Run(() =>
                             {
+                                device.SetTargetVelocity(Convert.ToInt32(obj_dg_pvm[0].Velocity));
+                                device.SetProfileAcceleration(Convert.ToUInt32(obj_dg_pvm[0].Acceleration));
+                                device.SetProfileDeceleration(Convert.ToUInt32(obj_dg_pvm[0].Deceleration));
+
+                                device.SdoWrite(0x60FF, 0x00, Convert.ToInt32(obj_dg_pvm[0].Velocity));
+
                                 device.SetControlWordPdo(device.CurrentCW, 0x000);
                             });
                         }
@@ -1701,19 +1714,19 @@ namespace EtherCAT_Master
                     {
                         await Task.Run(() =>
                         {
-                            sbyte test = 0;
+                            sbyte hmMethod = 0;
                             Dispatcher.Invoke(() =>
                             {
                                 try
                                 {
-                                    test = (sbyte)ComboBoxHoming.SelectedValue;
+                                    hmMethod = (sbyte)ComboBoxHoming.SelectedValue;
                                 }
                                 catch (Exception err)
                                 {
                                     Console.WriteLine(err.ToString());
                                 }
                             });
-                            homing.SetOperModeHM((Communication.Devices[SelectedDevice] as PCS), test, home_offset, index_pulse, fast_speed, slow_speed, home_acceleration);
+                            homing.SetOperModeHM((Communication.Devices[SelectedDevice] as PCS), hmMethod, home_offset, index_pulse, fast_speed, slow_speed, home_acceleration);
 
                         });
                     }
@@ -2273,7 +2286,7 @@ namespace EtherCAT_Master
                     || device.EcStateMachine == EC_SM.EC_STATE_PRE_OP
                     || Communication.commType == CommType.COMM_UDP)
                     {
-                        device.SetControlWordPdo(StateMachine.SM_CW_FAULT_RESET, 0x0100);
+                        device.SetControlWordPdoNoExtraBit(StateMachine.SM_CW_FAULT_RESET);
                     }
                 }
             });
@@ -2286,7 +2299,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWordPdo(StateMachine.SM_CW_SHUTDOWN, 0x0100);
+                    device.SetControlWordPdoNoExtraBit(StateMachine.SM_CW_SHUTDOWN);
                 }
             });
         }
@@ -2300,7 +2313,7 @@ namespace EtherCAT_Master
                     var device = Communication.Devices[SelectedDevice] as PCS;
                     //if ((int)device.EcStateMachine > 2)
                     //{
-                        device.SetControlWordPdo(StateMachine.SM_CW_SWITCH_ON, 0x0100);
+                        device.SetControlWordPdoNoExtraBit(StateMachine.SM_CW_SWITCH_ON);
                     //}
                 }
             });
@@ -2313,7 +2326,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWordPdo(StateMachine.SM_CW_ENABLE_OP, 0x0100);
+                    device.SetControlWordPdoNoExtraBit(StateMachine.SM_CW_ENABLE_OP);
                 }
             });
         }
@@ -2325,7 +2338,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWordPdo(StateMachine.SM_CW_DISABLE_OP, 0x0100);
+                    device.SetControlWordPdoNoExtraBit(StateMachine.SM_CW_DISABLE_OP);
                 }
             });
         }
@@ -2337,7 +2350,7 @@ namespace EtherCAT_Master
                 if (Communication.Connected)
                 {
                     var device = Communication.Devices[SelectedDevice] as PCS;
-                    device.SetControlWordPdo(StateMachine.SM_CW_QUICK_STOP, 0x0000);
+                    device.SetControlWordPdoNoExtraBit(StateMachine.SM_CW_QUICK_STOP);
                 }
             });
         }
