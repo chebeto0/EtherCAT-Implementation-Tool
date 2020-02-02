@@ -11,7 +11,7 @@
         Closing="Window_Closing"
         ContentRendered="Window_ContentRendered"
         Loaded="Window_Loaded"
-        Name ="MWindow" Title="INTEC EtherCAT Implementation Tool V0.1" Height="900" Width="1600" Background="White">
+        Name ="MWindow" Title="INTEC EtherCAT Implementation Tool V0.1.1" Height="900" Width="1600" Background="White">
 
     <Window.Resources>
         <ResourceDictionary>
