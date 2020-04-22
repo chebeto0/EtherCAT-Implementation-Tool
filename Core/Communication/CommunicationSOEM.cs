@@ -186,7 +186,11 @@ namespace EtherCAT_Master.Core.Communication
                 }
 
                 ts_scope.Cancel();
-                MmTimer.Stop();
+
+                if (MmTimer.IsRunning)
+                {
+                    MmTimer.Stop();
+                }
 
                 await Task.Delay(25);
 

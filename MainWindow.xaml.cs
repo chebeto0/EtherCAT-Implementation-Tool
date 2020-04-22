@@ -460,7 +460,9 @@ namespace EtherCAT_Master
         /// Declaration of external SOEM Function to read the names of the Network adapters
         /// </summary>
         /// <param name="buf"></param>
+        //[DllImport("D:\\share_work\\SOEM-master\\build\\soem.dll", CallingConvention = CallingConvention.StdCall)]
         [DllImport("Resources\\soem.dll", CallingConvention = CallingConvention.StdCall)]
+        //[DllImport("soem.dll", CallingConvention = CallingConvention.StdCall)]
         private static extern void GetNetworkAdapter(byte[] buf);
         public void EcGetNetworkAdapter(byte[] buf)
         {
@@ -478,7 +480,7 @@ namespace EtherCAT_Master
         {
             try
             {
-                byte[] buf = new byte[300];
+                byte[] buf = new byte[1024];
 
                 EcGetNetworkAdapter(buf);
 
@@ -2597,6 +2599,9 @@ namespace EtherCAT_Master
                         return;
                     }
 
+                    Communication.MmTimer.Stop();
+                    await Task.Delay(100);
+
                     /* Request Init and then Boot state from the ECAT state machine */
                     await Task.Run(() => { CommunicationSOEM.EcSmRequestState(Communication.Devices[SelectedDevice] as PCS, EC_SM.EC_STATE_INIT); });
                     await Task.Run(() => { CommunicationSOEM.EcSmRequestStateBoot(Communication.Devices[SelectedDevice] as PCS); });
@@ -2609,11 +2614,12 @@ namespace EtherCAT_Master
                             ret = CommunicationSOEM.DoFirmwareUpdate(SelectedDevice + 1, foe_password, fw_full_file_path, fw_file_name);
                         });
                         
-                        if (ret > 0) /* If ret is greater than 0 the write was succesful, otherwise an error message will be displayed */
+                        if (ret >= 0) /* If ret is greater than 0 the write was succesful, otherwise an error message will be displayed */
                         {
-                            await this.ShowMessageAsync("Success!", "Write of file successful! The device is resetting. This should take a few seconds.\nReset is complete when an LED is on. Afterwards you can scan and connect again.");
                             scanned_devices.Clear();
                             Disconnect();
+                            await this.ShowMessageAsync("Success!", "Write of file successful! The device is resetting. This should take a few seconds.\nReset is complete when an LED is on. Afterwards you can scan and connect again.");
+                           
                         }
                         else
                         {
@@ -2662,7 +2668,9 @@ namespace EtherCAT_Master
                                     await this.ShowMessageAsync("FoE Error: Invalid firmware file (0x800D)", "");
                                     break;
                                 default:
-                                    await this.ShowMessageAsync("Error", "Something went wrong.");
+                                    scanned_devices.Clear();
+                                    Disconnect();
+                                    await this.ShowMessageAsync("Error", "Something went wrong. Disconnecting.");
                                     break;
                             }
                         }
