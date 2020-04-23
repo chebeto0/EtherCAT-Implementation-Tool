@@ -283,6 +283,7 @@
     <Compile Include="Core\OtherVendorDevice.cs" />
     <Compile Include="Core\PCS.cs" />
     <Compile Include="Core\PlotViewModel.cs" />
+    <Compile Include="Core\PythonScripting.cs" />
     <Compile Include="Core\ScopeControl.cs" />
     <Compile Include="Core\SlaveDevice.cs" />
     <Compile Include="Core\StateMachine.cs" />
@@ -836,6 +837,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="Resources\Python.xshd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PythonScripts\default_script.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

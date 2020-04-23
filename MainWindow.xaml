@@ -921,10 +921,14 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
-                            
                         </Grid.RowDefinitions>
-                        <Button Name="ButtonTest" Grid.Row="0" Click="Button_Python_Click" Content="Test" Visibility="Visible"></Button>
-                        <avalonEdit:TextEditor x:Name="CodeTextEditor" Grid.Row="1"  FontFamily="Consolas" ShowLineNumbers="True" ></avalonEdit:TextEditor>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Name="ButtonRunScript" Grid.Row="0" Click="Button_Python_Click" Content="Run" Visibility="Visible"></Button>
+                        <Button Name="ButtonSaveScript" Grid.Row="0" Grid.Column="1" Click="ButtonSaveScript_Click"  Content="Save" Visibility="Visible"></Button>
+                        <avalonEdit:TextEditor x:Name="CodeTextEditor" Grid.Row="1" FontFamily="Consolas" TextChanged="CodeTextEditor_TextChanged" ShowLineNumbers="True" ></avalonEdit:TextEditor>
                     </Grid>
                 </TabItem>
 
