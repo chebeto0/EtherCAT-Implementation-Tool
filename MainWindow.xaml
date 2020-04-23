@@ -7,8 +7,10 @@
         xmlns:local="clr-namespace:EtherCAT_Master"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:nscontrols="clr-namespace:EtherCAT_Master.Core.Controls"              
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" 
         mc:Ignorable="d"
         Closing="Window_Closing"
+        Initialized="Window_Initialized"
         ContentRendered="Window_ContentRendered"
         Loaded="Window_Loaded"
         Name ="MWindow" Title="INTEC EtherCAT Implementation Tool V0.1.1" Height="900" Width="1600" Background="White">
@@ -912,6 +914,17 @@
 
                             </GroupBox>
                         </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Python Editor" BorderThickness="0.5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            
+                        </Grid.RowDefinitions>
+                        <Button Name="ButtonTest" Grid.Row="0" Click="Button_Python_Click" Content="Test" Visibility="Visible"></Button>
+                        <avalonEdit:TextEditor x:Name="CodeTextEditor" Grid.Row="1"  FontFamily="Consolas" ShowLineNumbers="True" ></avalonEdit:TextEditor>
                     </Grid>
                 </TabItem>
 

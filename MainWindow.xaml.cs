@@ -21,6 +21,14 @@ using OxyPlot.Series;
 using System.Windows.Data;
 using System.Threading;
 using System.Runtime.InteropServices;
+using Microsoft.Scripting;
+using Microsoft.Scripting.Hosting;
+using IronPython.Hosting;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Xml;
+using System.Security;
+using System.Diagnostics;
 using EtherCAT_Master.Core.Controls;
 using EtherCAT_Master.Core.Dictionary;
 using EtherCAT_Master.Core;
@@ -136,8 +144,143 @@ namespace EtherCAT_Master
             _timerUpdatePlots.Interval = 487; /* in milliseconds */
         }
 
+        /*
+         * ########  ##    ## ######## ##     ##  #######  ##    ## 
+         * ##     ##  ##  ##     ##    ##     ## ##     ## ###   ## 
+         * ##     ##   ####      ##    ##     ## ##     ## ####  ## 
+         * ########     ##       ##    ######### ##     ## ## ## ## 
+         * ##           ##       ##    ##     ## ##     ## ##  #### 
+         * ##           ##       ##    ##     ## ##     ## ##   ### 
+         * ##           ##       ##    ##     ##  #######  ##    ##  
+         */
+
+        private ScriptEngine _engine;
+        private ScriptScope _scope;
+
+        private void Window_Initialized(object sender, EventArgs e)
+        {
+            _engine = Python.CreateEngine();
+            _scope = _engine.CreateScope();
+
+            ScriptRuntime runtime = _engine.Runtime;
+            runtime.LoadAssembly(typeof(string).Assembly);
+            runtime.LoadAssembly(typeof(Uri).Assembly);
+
+            const string sampleScript = @"import time
+
+def main():
+	DriveSequence()
+	#StepperMode()
+	print('Finished XXX')
+
+def DriveSequence():
+	target_positions = [10000,50000,-30000]
+	velocity = 1000
+	acceleration = 100
+	deceleration = 100
+	device.SetOperModePPM()
+	device.SetControlWordPdo(0x06, 0x0000)
+	time.sleep(0.1)
+	device.SetControlWordPdo(0x0F, 0x0000)
+	time.sleep(0.1)
+	for position in target_positions:
+		SetNewPosition(velocity, acceleration, deceleration, position)
+		time.sleep(0.1)
+		while not device.stateMachineDsp402.TargetReached:
+			pass
+		print('Target Reached')
+
+def SetNewPosition(velocity=200, acceleration=100, deceleration=100, position=0):
+	device.SetControlWordPdo(device.CurrentCW, 0x0000)
+	time.sleep(0.1)
+	device.SetTargetPosition(position)
+	device.SetProfileVelocity(velocity)
+	device.SetProfileAcceleration(acceleration)
+	device.SetProfileDeceleration(deceleration)
+	time.sleep(0.1)
+	device.SetControlWordPdo(device.CurrentCW, 0x0030)
+
+def StepperMode(mode=0, angle=30, amplitude=75, target_duration = 500, pairs_of_poles = 3):
+
+    offset = list()
+
+    device.SdoWrite(0x2800, 0x01, mode)
+    device.SdoWrite(0x2800, 0x02, angle)
+    device.SdoWrite(0x2800, 0x03, amplitude)
+    device.SdoWrite(0x2800, 0x04, target_duration)
+    time.sleep(0.1)
+    device.SetControlWord(0x06,0)
+    time.sleep(0.1)
+    device.SetControlWord(0x07,0)
+    time.sleep(0.1)
+    device.SetControlWord(0x0f,0)
+    time.sleep(0.1)
+    device.SetOperModeStepper()
+
+    num_steps = int(round(360/abs(angle)*pairs_of_poles,0))
+
+    for i in range(0,num_steps):
+        time.sleep(target_duration/1000.0)
+        device.SdoRead(0x2800, 0x07)
+        temp = device.ObjectDictionary.GetItem(0x2800,0x07).Value
+        offset.append(temp)
+        print( temp )
+
+    device.SetControlWord(0,0)
+
+    print('')
+    print(sum(offset)/len(offset))
+
+if __name__ == '__builtin__':
+	main()";
+            CodeTextEditor.Text = sampleScript;
+            CodeTextEditor.SyntaxHighlighting =
+                 HighlightingLoader.Load(new XmlTextReader(@"Resources\Python.xshd"),
+                    HighlightingManager.Instance);
+        }
+
+        private async void Button_Python_Click(object sender, RoutedEventArgs e) //Button event for testing stuff
+        {
+            var code = CodeTextEditor.Text;
+            _scope.SetVariable("device", Communication.Devices[SelectedDevice]);
+
+            try
+            {
+                var source = _engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
+
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        source.Execute(_scope);
+                    }
+                    catch (Exception ex)
+                    {
+                        var eo = _engine.GetService<ExceptionOperations>();
+                        var error = eo.FormatException(ex);
+
+                        System.Windows.MessageBox.Show(error, "There was an Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                });
+
+            }
+            catch (Exception err)
+            {
+                System.Windows.MessageBox.Show(err.ToString());
+            }
+        }
+
+        //###################################################################################
+        //###################################################################################
+        //###################################################################################
+        //###################################################################################
+        //###################################################################################
+        //###################################################################################
+
+
         #region Initialization of UI things
-        
+
         /// <summary>
         /// Set Up of UI Properties and Data Context from MainWindow
         /// </summary>
