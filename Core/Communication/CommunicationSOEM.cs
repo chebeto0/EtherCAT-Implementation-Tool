@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace EtherCAT_Master.Core.Communication
 {
@@ -49,10 +50,10 @@ namespace EtherCAT_Master.Core.Communication
         public void StartPdoExchangeTask()
         {
             /* Declare multimedia Timer with 20 ms interval */
-            MmTimer = new MultimediaTimer { Interval = 1 };
+            MmTimer = new MultimediaTimer { Interval = 20 };
 
             /* Timer event in charge of the exchange of PDO data and for the calling of Scope SDOs */
-            MmTimer.Elapsed += async (o, e) =>
+            MmTimer.Elapsed += /*async*/ (o, e) =>
             {
                 /* Call an exchange of PDO */
                 wkc_pdo = EcSendRecieveProcessdataExtern();
@@ -77,12 +78,27 @@ namespace EtherCAT_Master.Core.Communication
                     }
                 }
 
-                wkc_wathchdog = (wkc_pdo <= 0) ? wkc_wathchdog + 1 : 0; /* check for worker counter, increase watchdog if worker counter is <=0 */
+                //wkc_wathchdog = (wkc_pdo < 0) ? wkc_wathchdog + 1 : 0; /* check for worker counter, increase watchdog if worker counter is <=0 */
+                Console.WriteLine(wkc_pdo);
 
-                if (wkc_wathchdog > 25)
+                if (wkc_pdo < 3)
+                {
+                    wkc_wathchdog += 1;
+                }
+                else
+                {
+                    wkc_wathchdog = 0;
+                }
+
+                if (wkc_wathchdog > 1000)
                 {
                     Disconnect();
-                    await MW.ShowMessageAsync("Client Disconnected", "Lost contact to device.");
+
+                    //MW.Dispatcher.Invoke(() =>
+                    //{
+                        //await MW.ShowMessageAsync("Client Disconnected", "Lost contact to device.");+
+                        //MessageBox.Show("Client Disconnected. Lost contact to device.");
+                    //});
                 }
             };
             
@@ -339,16 +355,16 @@ namespace EtherCAT_Master.Core.Communication
                 {
                     case "SINT":
                         lock (comm_locker)
-                            ret = SdoWriteInt8(slave_number, index, subindex, (sbyte)value);
+                            ret = SdoWriteInt8(slave_number, index, subindex, Convert.ToSByte(value));
                         break;
                     case "BOOL":
                     case "USINT":
                         lock (comm_locker)
-                            ret = SdoWriteUInt8(slave_number, index, subindex, (byte)value);
+                            ret = SdoWriteUInt8(slave_number, index, subindex, Convert.ToByte(value));
                         break;
                     case "INT":
                         lock (comm_locker)
-                            ret = SdoWriteInt16(slave_number, index, subindex, (short)value);
+                            ret = SdoWriteInt16(slave_number, index, subindex, Convert.ToInt16(value));
                         break;
                     case "UINT":
                         lock (comm_locker)
@@ -356,19 +372,19 @@ namespace EtherCAT_Master.Core.Communication
 
                             if (index== 0x6040 && subindex == 0)
                             {
-                                (Devices[slave_number - 1] as PCS).Controlword = (ushort)value;
+                                (Devices[slave_number - 1] as PCS).Controlword = Convert.ToUInt16(value);
                             }
 
-                            ret = SdoWriteUInt16(slave_number, index, subindex, (ushort)value);
+                            ret = SdoWriteUInt16(slave_number, index, subindex, Convert.ToUInt16(value));
                         }
                         break;
                     case "DINT":
                         lock (comm_locker)
-                            ret = SdoWriteInt32(slave_number, index, subindex, (int)value);
+                            ret = SdoWriteInt32(slave_number, index, subindex, Convert.ToInt32(value));
                         break;
                     case "UDINT":
                         lock (comm_locker)
-                            ret = SdoWriteUInt32(slave_number, index, subindex, (uint)value);
+                            ret = SdoWriteUInt32(slave_number, index, subindex, Convert.ToUInt32(value));
                         break;
                     case "STRING":
                         byte[] buf = new byte[item.Length];

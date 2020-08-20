@@ -239,6 +239,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="Core\Communication\CommunicationBase.cs" />
     <Compile Include="Core\Communication\CommunicationDummy.cs" />
     <Compile Include="Core\Communication\CommunicationSOEM.cs" />
@@ -259,6 +260,7 @@
     <Compile Include="Core\Controls\MSBUserControl.xaml.cs">
       <DependentUpon>MSBUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Core\Controls\PythonOutput.cs" />
     <Compile Include="Core\Controls\ScopeUserControl.xaml.cs">
       <DependentUpon>ScopeUserControl.xaml</DependentUpon>
     </Compile>
@@ -839,7 +841,13 @@
     <Content Include="Resources\Python.xshd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="PythonScripts\default_script.py">
+    <Content Include="PythonScripts\sample_calc_offset.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PythonScripts\sample_drive_sequence.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PythonScripts\temp.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -892,6 +900,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PythonScripts\Saves\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

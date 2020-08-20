@@ -8,39 +8,77 @@ using Microsoft.Scripting.Hosting;
 using IronPython.Hosting;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.IO;
+using System.ComponentModel;
 
-namespace EtherCAT_Implementation_Tool.Core
+namespace EtherCAT_Master.Core
 {
-    public class PythonScripting
+    public class PythonScripting : INotifyPropertyChanged
     {
 
-        public string CurrentFileName { get; set; }
+        private string _currentFileName;
+        public string CurrentFileName
+        {
+            get { return _currentFileName; }
+            set
+            {
+                _currentFileName = value;
+                OnPropertyChanged("CurrentFileName");
+            }
+        }
         public string CurrentScriptText { get; set; }
+        public string PyScriptDirectory { get; set; }
 
-        private readonly string pythonFolder = "PythonScripts";
+        public readonly string PythonFolderName = "PythonScripts";
 
         public ScriptEngine PyEngine;
         public ScriptScope PyScope;
 
-        public PythonScripting(string file_name)
+        public PythonScripting(string exe_path, string file_name)
         {
 
-            PyEngine = Python.CreateEngine();
-            PyScope = PyEngine.CreateScope();
+            if (!File.Exists(PythonFolderName + "\\temp.py"))
+            {
+                File.Create(PythonFolderName + "\\temp.py");
+            }
 
-            //ScriptRuntime runtime = PyEngine.Runtime;
-            //runtime.LoadAssembly(typeof(string).Assembly);
-            //runtime.LoadAssembly(typeof(Uri).Assembly);
+            PyEngine = Python.CreateEngine();
+
+            PyScriptDirectory = Path.Combine(exe_path, PythonFolderName);
+
+            PyEngine.SetSearchPaths(new List<string> { PyScriptDirectory });
+
+            PyScope = PyEngine.CreateScope();
 
             CurrentFileName = file_name;
 
-            CurrentScriptText = System.IO.File.ReadAllText( pythonFolder + "\\" + CurrentFileName);
+            if ( File.Exists(Path.Combine( PyScriptDirectory, CurrentFileName)) )
+            {
+                CurrentScriptText = File.ReadAllText(Path.Combine(PyScriptDirectory, CurrentFileName));
+            }
+            else
+            {
+                CurrentScriptText = File.ReadAllText(Path.Combine(PyScriptDirectory, "temp.py"));
+            }
 
         }
 
         public void SaveScript()
         {
-            System.IO.File.WriteAllText(pythonFolder + "\\" + CurrentFileName, CurrentScriptText);
+            File.WriteAllText(Path.Combine(PyScriptDirectory, CurrentFileName), CurrentScriptText);
+        }
+
+        public void OpenScript(string file_name)
+        {
+            CurrentFileName = file_name;
+
+            CurrentScriptText = File.ReadAllText(Path.Combine(PyScriptDirectory, CurrentFileName));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
     }

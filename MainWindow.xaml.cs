@@ -33,7 +33,6 @@ using EtherCAT_Master.Core.Controls;
 using EtherCAT_Master.Core.Dictionary;
 using EtherCAT_Master.Core;
 using EtherCAT_Master.Core.Communication;
-using EtherCAT_Implementation_Tool.Core;
 
 /* 
  * TODO 07-01-2019 
@@ -88,6 +87,7 @@ namespace EtherCAT_Master
 
         public ErrorNotificationsViewModel ErrorNoti = new ErrorNotificationsViewModel();
         public PythonScripting PyScripting;
+        public PythonOutput pyOutput;
 
         private ObservableCollection<HambMenuItemDict> HambMenuDict = new ObservableCollection<HambMenuItemDict>();
 
@@ -158,25 +158,36 @@ namespace EtherCAT_Master
          * 
          */
 
-        private void Window_Initialized(object sender, EventArgs e)
+        private void InitializePythonScripting()
         {
+            
+            PyScripting = new PythonScripting(exePath, appSettings.LastOpenPyScript);
 
-            PyScripting = new PythonScripting("default_script.py");
+            fileNameText.DataContext = PyScripting;
 
             CodeTextEditor.Text = PyScripting.CurrentScriptText;
             CodeTextEditor.SyntaxHighlighting =
                  HighlightingLoader.Load(new XmlTextReader(@"Resources\Python.xshd"),
                     HighlightingManager.Instance);
 
+            pyOutput = new PythonOutput(this, outputBox);
+
         }
 
         private async void Button_Python_Click(object sender, RoutedEventArgs e) /* Button event for testing stuff */
         {
-            var code = CodeTextEditor.Text;
-            PyScripting.PyScope.SetVariable("device", Communication.Devices[SelectedDevice]);
-
             try
             {
+                var code = CodeTextEditor.Text;
+                PyScripting.PyScope.SetVariable("devices", Communication.Devices);
+                PyScripting.PyScope.SetVariable("device", Communication.Devices[SelectedDevice]);
+                PyScripting.PyScope.SetVariable("output", pyOutput);
+
+                pyOutput.println("");
+                pyOutput.println(string.Format("--- Running script: {0} ---", PyScripting.CurrentFileName));
+                pyOutput.println("");
+
+            
                 var source = PyScripting.PyEngine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
 
                 await Task.Run(() =>
@@ -205,11 +216,95 @@ namespace EtherCAT_Master
         private void CodeTextEditor_TextChanged(object sender, EventArgs e)
         {
             PyScripting.CurrentScriptText = CodeTextEditor.Text;
+            if (PyScripting.CurrentFileName == "temp.py")
+            {
+                PyScripting.SaveScript();
+            }
         }
 
         private void ButtonSaveScript_Click(object sender, RoutedEventArgs e)
         {
-            PyScripting.SaveScript();
+
+            if (PyScripting.CurrentFileName != "temp.py")
+            {
+                PyScripting.SaveScript();
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
+                {
+                    Title = "Save file",
+                    FileName = "NewDocument",
+                    DefaultExt = "py",
+                    Filter = "Python files (*.py)|*.py"
+                };
+
+                /* Display OpenFileDialog by calling ShowDialog method */
+                bool? result = dlg.ShowDialog();
+
+                /* Get the selected file name and display in a TextBox */
+                if (result == true)
+                {
+                    PyScripting.CurrentFileName = dlg.SafeFileName;
+                    appSettings.LastOpenPyScript = PyScripting.CurrentFileName;
+
+                    PyScripting.SaveScript();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            
+        }
+
+        private void ButtonOpenScript_Click(object sender, RoutedEventArgs e)
+        {
+
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                Tag = "Select a python script file",
+                DefaultExt = "py",
+                Filter = "Python files (*.py)|*.py"
+            };
+
+            /* Display OpenFileDialog by calling ShowDialog method */
+            bool? result = dlg.ShowDialog();
+
+            /* Get the selected file name and display in a TextBox */
+            if (result == true)
+            {
+
+                PyScripting.OpenScript( dlg.SafeFileName );
+
+                CodeTextEditor.Text = PyScripting.CurrentScriptText;
+
+                appSettings.LastOpenPyScript = PyScripting.CurrentFileName;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        private void Button_PySaveOutput_Click(object sender, RoutedEventArgs e)
+        {
+            pyOutput.saveToText();
+        }
+
+        private void Button_PyClearOutput_Click(object sender, RoutedEventArgs e)
+        {
+            pyOutput.Clear();
+        }
+
+        private void ButtonNewScript_Click(object sender, RoutedEventArgs e)
+        {
+
+            PyScripting.CurrentFileName = "temp.py";
+            CodeTextEditor.Text = "import time\n\n";
+            appSettings.LastOpenPyScript = "temp.py";
+
         }
 
         //###################################################################################
@@ -222,6 +317,8 @@ namespace EtherCAT_Master
 
         #region Initialization of UI things
 
+        private AppSettings appSettings;
+
         /// <summary>
         /// Set Up of UI Properties and Data Context from MainWindow
         /// </summary>
@@ -230,24 +327,19 @@ namespace EtherCAT_Master
             _scopeUserControl.hamburger1.ItemClick += OnMenuItemClick1;
             ContentScope.DataContext = _scopeUserControl;
 
-            /* Open the config file to get the config data*/
-            var configManager = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            var confCollection = configManager.AppSettings.Settings;
-
-            configManager.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection(configManager.AppSettings.SectionInformation.Name);
+            appSettings = new AppSettings();
 
             /* Get the config data for the controls (like the sliders) for velocity, acceleration, position, etc.*/
-            ds_time_minimum = Convert.ToDouble(confCollection["drice_sequence_time_minimum"].Value);
-            ds_time_interval = Convert.ToDouble(confCollection["drice_sequence_time_interval"].Value);
-            slider_max_vel = Convert.ToInt32(confCollection["slider_max_vel"].Value);
-            slide_size_ticks_vel = Convert.ToInt32(confCollection["slider_step_vel"].Value);
-            slider_max_acc = Convert.ToInt32(confCollection["slider_max_acc"].Value);
-            slide_size_ticks_acc = Convert.ToInt32(confCollection["slider_step_acc"].Value);
-            slider_max_dec = Convert.ToInt32(confCollection["slider_max_dec"].Value);
-            slide_size_ticks_dec = Convert.ToInt32(confCollection["slider_step_dec"].Value);
-            slider_max_pos = Convert.ToInt32(confCollection["slider_max_pos"].Value);
-            slide_size_ticks_pos = Convert.ToInt32(confCollection["slider_step_pos"].Value);
+            ds_time_minimum = appSettings.DriveSequenceTimeMinimum;
+            ds_time_interval = appSettings.DriveSequenceTimeInterval; ;
+            slider_max_vel = appSettings.SliderMaxVelocity; ;
+            slide_size_ticks_vel = appSettings.SliderStepVelocity; ;
+            slider_max_acc = appSettings.SliderMaxAcceleration; ;
+            slide_size_ticks_acc = appSettings.SliderStepAcceleration; ;
+            slider_max_dec = appSettings.SliderMaxDeceleration; ;
+            slide_size_ticks_dec = appSettings.SliderStepDeceleration; ;
+            slider_max_pos = appSettings.SliderMaxPosition; ;
+            slide_size_ticks_pos = appSettings.SliderStepPosition; ;
 
             WindowState = WindowState.Maximized;/* Maximize Main Window */
 
@@ -389,7 +481,7 @@ namespace EtherCAT_Master
             ///////////////////////////// Get ADAPTERS //////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////
 
-            AdapterNumber = Convert.ToInt32(confCollection["number_network_adapter"].Value);
+            AdapterNumber = appSettings.NumberNetworkAdapter;
             ScanAdapters();
             CmbxNetworkAdapter.SelectedIndex = AdapterNumber;
 
@@ -437,6 +529,13 @@ namespace EtherCAT_Master
 
             /*  */
             buttonSplitScope.Content = new PackIconMaterial() { Kind = PackIconMaterialKind.ChartLine };
+
+            /////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////
+            ///
+            InitializePythonScripting();
+
         }
 
         //private void MakeNewScopeHambMenus()
@@ -544,9 +643,7 @@ namespace EtherCAT_Master
         /// Declaration of external SOEM Function to read the names of the Network adapters
         /// </summary>
         /// <param name="buf"></param>
-        //[DllImport("D:\\share_work\\SOEM-master\\build\\soem.dll", CallingConvention = CallingConvention.StdCall)]
         [DllImport("Resources\\soem.dll", CallingConvention = CallingConvention.StdCall)]
-        //[DllImport("soem.dll", CallingConvention = CallingConvention.StdCall)]
         private static extern void GetNetworkAdapter(byte[] buf);
         public void EcGetNetworkAdapter(byte[] buf)
         {
@@ -602,14 +699,7 @@ namespace EtherCAT_Master
             {
                 AdapterNumber = (sender as ComboBox).SelectedIndex;
 
-                var configManager = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var confCollection = configManager.AppSettings.Settings;
-
-                configManager.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(configManager.AppSettings.SectionInformation.Name);
-
-                confCollection["number_network_adapter"].Value = AdapterNumber.ToString();
-                configManager.Save(ConfigurationSaveMode.Modified);
+                appSettings.NumberNetworkAdapter = AdapterNumber;
             }
             catch (Exception err)
             {
@@ -2831,6 +2921,7 @@ namespace EtherCAT_Master
             GridX.ColumnDefinitions[2].Width = new GridLength(1, GridUnitType.Auto);
         }
 
+        
     }
 
 

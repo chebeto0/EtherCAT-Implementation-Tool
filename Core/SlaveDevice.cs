@@ -18,7 +18,6 @@ namespace EtherCAT_Master.Core
         EC_STATE_BOOT       = 3,
         EC_STATE_SAFE_OP    = 4,
         EC_STATE_OPER       = 8,
-
         EC_SM_ERROR         = 16,
     }
 

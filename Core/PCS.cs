@@ -465,9 +465,11 @@ namespace EtherCAT_Master.Core
            SdoWrite(item.Index, item.Subindex, item.Value);
         }
 
-        public void SdoRead(ushort index, byte subindex)
+        public object SdoRead(ushort index, byte subindex)
         {
             COMM.AsyncRead(SlaveNumber, index, subindex);
+
+            return ObjectDictionary.GetItem(index, subindex).Value;
         }
 
         /// <summary>

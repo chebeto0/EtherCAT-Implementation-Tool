@@ -10,10 +10,9 @@
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" 
         mc:Ignorable="d"
         Closing="Window_Closing"
-        Initialized="Window_Initialized"
         ContentRendered="Window_ContentRendered"
         Loaded="Window_Loaded"
-        Name ="MWindow" Title="INTEC EtherCAT Implementation Tool V0.1.1" Height="900" Width="1600" Background="White">
+        Name ="MWindow" Title="INTEC EtherCAT Implementation Tool V0.2.0" Height="900" Width="1600" Background="White">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -553,6 +552,75 @@
                         </Controls:HamburgerMenu>
                     </Grid>
                 </TabItem>
+                <TabItem Header="Python Editor" BorderThickness="0.5">
+                    <Grid>
+                        <!--<Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>-->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <!--<ColumnDefinition Width="2*"/>-->
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Grid.RowSpan="3">
+                            <Button Name="ButtonRunScript"  Width="100" Click="Button_Python_Click" Content="Run" Visibility="Visible"></Button>
+                            <Button Name="ButtonSaveScript" Width="100" Grid.Column="1" Click="ButtonSaveScript_Click"  Content="Save" Visibility="Visible"></Button>
+                            <Button Name="ButtonOpenFile" Width="100" Grid.Column="1" Click="ButtonOpenScript_Click"  Content="Open" Visibility="Visible"></Button>
+                            <Button Name="ButtonNewFile" Width="100" Grid.Column="1" Click="ButtonNewScript_Click"  Content="New" Visibility="Visible"></Button>
+                        </StackPanel>
+
+                        <!--<Grid Grid.Row="1" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="fileNameText" Text="{Binding CurrentFileName}"  IsReadOnly="True"/>
+                            <TextBox Grid.Column="2" Text="Script output:"  IsReadOnly="True"/>
+                        </Grid>-->
+
+                        <Grid Grid.Column="1">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="4*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="fileNameText" Text="{Binding CurrentFileName}"  IsReadOnly="True"/>
+
+                            <Grid Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox  Text="Script output:"  IsReadOnly="True"/>
+                                <Button Name="ButtonSaveOutput" Grid.Column="1"  Width="75" Click="Button_PySaveOutput_Click" Content="Save text" Visibility="Visible"></Button>
+                                <Button Name="ButtonClear" Grid.Column="2"  Width="75" Click="Button_PyClearOutput_Click" Content="Clear" Visibility="Visible"></Button>
+                            </Grid>
+                            
+
+                            <avalonEdit:TextEditor x:Name="CodeTextEditor" FontFamily="Consolas" Grid.Row="1" TextChanged="CodeTextEditor_TextChanged" ShowLineNumbers="True" ></avalonEdit:TextEditor>
+                            <GridSplitter HorizontalAlignment="Right" 
+                                VerticalAlignment="Stretch" 
+                                Grid.Column="1" Grid.RowSpan="2" ResizeBehavior="PreviousAndNext"
+                                Width="4" Background="#FF8F9EA5"/>
+                            <RichTextBox x:Name="outputBox" FontFamily="Consolas" Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True">
+                                <FlowDocument/>
+                            </RichTextBox>
+                        </Grid>
+
+                    </Grid>
+                </TabItem>
                 <TabItem Header="General" BorderThickness="0.5">
                     <Grid Background="#FFFFFFFF" >
 
@@ -916,21 +984,7 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Python Editor" BorderThickness="0.5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Button Name="ButtonRunScript" Grid.Row="0" Click="Button_Python_Click" Content="Run" Visibility="Visible"></Button>
-                        <Button Name="ButtonSaveScript" Grid.Row="0" Grid.Column="1" Click="ButtonSaveScript_Click"  Content="Save" Visibility="Visible"></Button>
-                        <avalonEdit:TextEditor x:Name="CodeTextEditor" Grid.Row="1" FontFamily="Consolas" TextChanged="CodeTextEditor_TextChanged" ShowLineNumbers="True" ></avalonEdit:TextEditor>
-                    </Grid>
-                </TabItem>
+                
 
             </TabControl>
         </Grid>
